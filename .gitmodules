@@ -17,3 +17,8 @@
 	path = OCA/l10n-spain
 	url = git@github.com:OCA/l10n-spain.git
 	branch = 14.0
+
+[submodule "OCA/server-ux"]
+	path = OCA/server-ux
+	url = git@github.com:OCA/server-ux.git
+	branch = 14.0

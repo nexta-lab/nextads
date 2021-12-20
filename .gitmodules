@@ -27,3 +27,13 @@
 	path = OCA/web
 	url = git@github.com:OCA/web.git
 	branch = 14.0
+
+[submodule "OCA/reporting-engine"]
+	path = OCA/reporting-engine
+	url = git@github.com:OCA/reporting-engine.git
+	branch = 14.0
+
+[submodule "OCA/mis-builder"]
+	path = OCA/mis-builder
+	url = git@github.com:OCA/mis-builder.git
+	branch = 14.0

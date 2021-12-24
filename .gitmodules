@@ -37,3 +37,8 @@
 	path = OCA/mis-builder
 	url = git@github.com:OCA/mis-builder.git
 	branch = 14.0
+
+[submodule "Nexta-Digital-Solutions/nextads-tools"]
+	path = Nexta-Digital-Solutions/nextads-tools
+	url = git@github.com:Nexta-Digital-Solutions/nextads-tools.git
+	branch = main

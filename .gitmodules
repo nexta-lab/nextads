@@ -40,5 +40,5 @@
 
 [submodule "Nexta-Digital-Solutions/nextads-tools"]
 	path = Nexta-Digital-Solutions/nextads-tools
-	url = git@github.com:Nexta-Digital-Solutions/nextads-tools.git
+	url = git@github.com:Nexta-Digital-Solutions/nextads-tools-14.git
 	branch = main

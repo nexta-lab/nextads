@@ -52,3 +52,8 @@
 	path = OCA/project
 	url = git@github.com:OCA/project.git
 	branch = 14.0
+
+[submodule "OCA/project-agile"]
+	path = OCA/project-agile
+	url = git@github.com:OCA/project-agile.git
+	branch = 14.0

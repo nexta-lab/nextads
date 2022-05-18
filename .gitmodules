@@ -47,3 +47,8 @@
 	path = Nexta-Digital-Solutions/nexta-project-14
 	url = git@github.com:Nexta-Digital-Solutions/nexta-project-14.git
 	branch = main
+
+[submodule "Nexta-Digital-Solutions/nexta-project-14"]
+	path = Nexta-Digital-Solutions/nexta-project-14
+	url = git@github.com:Nexta-Digital-Solutions/nexta-project-14.git
+	branch = main

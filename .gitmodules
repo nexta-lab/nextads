@@ -43,6 +43,16 @@
 	url = git@github.com:Nexta-Digital-Solutions/nextads-tools-14.git
 	branch = main
 
+[submodule "OCA/project"]
+	path = OCA/project
+	url = git@github.com:OCA/project.git
+	branch = 14.0
+
+[submodule "OCA/project-agile"]
+	path = OCA/project-agile
+	url = git@github.com:OCA/project-agile.git
+	branch = 14.0
+
 [submodule "Nexta-Digital-Solutions/nexta-project-14"]
 	path = Nexta-Digital-Solutions/nexta-project-14
 	url = git@github.com:Nexta-Digital-Solutions/nexta-project-14.git

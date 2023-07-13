@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="report_saleorder_pedido" inherit_id="sale.report_saleorder_document">
+
+    <xpath expr="//t[@t-set='information_block']" position="attributes">
+        <attribute name="t-if">1!=1</attribute>
+    </xpath>
+
+    <xpath expr="//th[@name='th_taxes']" position="attributes">
+        <attribute name="t-if">1!=1</attribute>
+    </xpath>
+
+    <xpath expr="//td[@name='td_taxes']" position="attributes">
+        <attribute name="t-if">1!=1</attribute>
+    </xpath>
+
+    <xpath expr="//td[@name='td_quantity']//span[2]" position="attributes">
+        <attribute name="t-if">1!=1</attribute>
+    </xpath>
+<!--   <xpath expr="//p[@t-if='not is_html_empty(doc.payment_term_id.note)']" position="after">-->
+<!--        <p t-if="doc.payment_mode_id">-->
+<!--           <span>Payment mode: </span>-->
+<!--           <span t-field="doc.payment_mode_id"/>-->
+<!--        </p>-->
+<!--     Han pedido quitar la condición:  and doc.payment_mode_id.name=='TRANSFERENCIA BANCARIA'-->
+<!--        <p t-if="doc.payment_mode_id and doc.company_id.bank_ids">-->
+<!--          <span class="o_report_layout">Número de cuenta bancaria:</span>-->
+<!--          <span t-field="doc.company_id.bank_ids[0].acc_number"/>-->
+<!--        </p>-->
+<!--        <p t-if="doc.company_id.bank_ids">-->
+<!--          <span class="o_report_layout">Número BIC o Swift:</span>-->
+<!--          <span t-field="doc.company_id.bank_ids[0].bank_id"/>-->
+<!--        </p>-->
+<!--    </xpath>-->
+</template>
+</odoo>

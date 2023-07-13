@@ -1,0 +1,15 @@
+.o_total_custom{
+    color: #000 !important;
+    background-color: #FFF !important;
+}
+
+.test{
+    color: #B6FD18 !important;
+}
+
+@media print {
+  .o_report_layout {
+    page-break-inside: avoid;
+    padding-bottom: 50px;
+  }
+}

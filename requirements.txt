@@ -1,0 +1,2 @@
+bravado_core
+jsonschema==3.2.0

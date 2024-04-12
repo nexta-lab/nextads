@@ -1,57 +1,52 @@
 [submodule "OCA/bank-payment"]
 	path = OCA/bank-payment
 	url = git@github.com:OCA/bank-payment.git
-	branch = 14.0
+	branch = 16.0
 
 [submodule "OCA/account-financial-reporting"]
 	path = OCA/account-financial-reporting
 	url = git@github.com:OCA/account-financial-reporting.git
-	branch = 14.0
+	branch = 16.0
 
 [submodule "OCA/account-financial-tools"]
 	path = OCA/account-financial-tools
 	url = git@github.com:OCA/account-financial-tools.git
-	branch = 14.0
+	branch = 16.0
 
 [submodule "OCA/l10n-spain"]
 	path = OCA/l10n-spain
 	url = git@github.com:OCA/l10n-spain.git
-	branch = 14.0
+	branch = 16.0
 
 [submodule "OCA/server-ux"]
 	path = OCA/server-ux
 	url = git@github.com:OCA/server-ux.git
-	branch = 14.0
+	branch = 16.0
 
 [submodule "OCA/web"]
 	path = OCA/web
 	url = git@github.com:OCA/web.git
-	branch = 14.0
+	branch = 16.0
 
 [submodule "OCA/reporting-engine"]
 	path = OCA/reporting-engine
 	url = git@github.com:OCA/reporting-engine.git
-	branch = 14.0
+	branch = 16.0
 
 [submodule "OCA/mis-builder"]
 	path = OCA/mis-builder
 	url = git@github.com:OCA/mis-builder.git
-	branch = 14.0
-
-[submodule "Nexta-Digital-Solutions/nextads-tools"]
-	path = Nexta-Digital-Solutions/nextads-tools
-	url = git@github.com:Nexta-Digital-Solutions/nextads-tools-14.git
-	branch = main
+	branch = 16.0
 
 [submodule "OCA/project"]
 	path = OCA/project
 	url = git@github.com:OCA/project.git
-	branch = 14.0
+	branch = 16.0
 
 [submodule "OCA/project-agile"]
 	path = OCA/project-agile
 	url = git@github.com:OCA/project-agile.git
-	branch = 14.0
+	branch = 16.0
 
 
 
@@ -59,4 +54,8 @@
 [submodule "Nexta-Digital-Solutions/nexta-project-14"]
 	path = Nexta-Digital-Solutions/nexta-project-14
 	url = git@github.com:Nexta-Digital-Solutions/nexta-project-14.git
+	branch = main
+[submodule "Nexta-Digital-Solutions/nexta-tools-16"]
+	path = Nexta-Digital-Solutions/nexta-tools-16
+	url = git@github.com:Nexta-Digital-Solutions/nexta-tools-16
 	branch = main

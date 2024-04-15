@@ -33,11 +33,6 @@
 	url = git@github.com:OCA/reporting-engine.git
 	branch = 16.0
 
-[submodule "OCA/mis-builder"]
-	path = OCA/mis-builder
-	url = git@github.com:OCA/mis-builder.git
-	branch = 16.0
-
 [submodule "OCA/project"]
 	path = OCA/project
 	url = git@github.com:OCA/project.git
@@ -58,4 +53,8 @@
 [submodule "Nexta-Digital-Solutions/nexta-tools-16"]
 	path = Nexta-Digital-Solutions/nexta-tools-16
 	url = git@github.com:Nexta-Digital-Solutions/nexta-tools-16
+	branch = main
+[submodule "oca-mis-builder"]
+	path = oca-mis-builder
+	url = git@github.com:Nexta-Digital-Solutions/oca-mis-builder.git
 	branch = main

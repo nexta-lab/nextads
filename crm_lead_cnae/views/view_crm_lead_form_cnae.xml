@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_crm_lead_form_cnae" model="ir.ui.view">
+        <field name="name">crm.lead.form.inherit.cnae</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='extra']" position="inside">
+                <group string="CNAE">
+                    <group>
+                        <field name="cnae_vat" string="Identificación Fiscal"/>
+                        <field name="cnae_code"/>
+                        <field name="company_status"/>
+                    </group>
+                    <group>
+                        <field name="employee_count"/>
+                        <field name="incorporation_date"/>
+                    </group>
+                    <group>
+                        <field name="capital_social"/>
+                        <field name="annual_revenue"/>
+                        <field name="last_balance_year"/>
+                    </group>
+                </group>
+            </xpath>
+            <xpath expr="//page[@name='lead']" position="inside">
+                <group string="CNAE">
+                    <group>
+                        <field name="cnae_vat" string="Identificación Fiscal"/>
+                        <field name="cnae_code"/>
+                        <field name="company_status"/>
+                    </group>
+                    <group>
+                        <field name="employee_count"/>
+                        <field name="incorporation_date"/>
+                    </group>
+                    <group>
+                        <field name="capital_social"/>
+                        <field name="annual_revenue"/>
+                        <field name="last_balance_year"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

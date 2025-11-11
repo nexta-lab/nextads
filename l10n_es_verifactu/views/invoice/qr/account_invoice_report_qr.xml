@@ -1,0 +1,17 @@
+<odoo>
+    <template id="invoice_qr_above_layout" inherit_id="account.report_invoice_document">
+        <xpath expr="//*[@t-call='web.external_layout']" position="before">
+            <t t-if="o._name == 'account.move' and o.move_type in ('out_invoice', 'out_refund') and o.verifactu_qr_image">
+                <div style="margin: 10mm 0 5mm 0; text-align: left;">
+                    <div style="font-weight: bold;">QR tributario:</div>
+                    <img t-att-src="'data:image/png;base64,%s' % o.verifactu_qr_image.decode()"
+                         style="width:40mm; height:40mm; border: 1px solid #ccc; padding: 5px; background-color: #fff;"/>
+                    <t t-if="o.verifactu_status not in ('error', 'rejected', 'pending')">
+                        <div style="font-weight: bold;">VERI*FACTU</div>
+                    </t>
+                </div>
+            </t>
+        </xpath>
+
+    </template>
+</odoo>

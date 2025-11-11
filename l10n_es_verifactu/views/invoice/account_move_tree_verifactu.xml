@@ -1,0 +1,25 @@
+<odoo>
+    <record id="view_move_tree_inherit_verifactu" model="ir.ui.view">
+        <field name="name">account.move.tree.verifactu</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_out_invoice_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="inside">
+                <field name="verifactu_status"
+                    widget="badge"
+                    string="Estado VF"
+                    options="{'class': {
+                        'pending': 'bg-warning text-dark',
+                        'sent': 'bg-info text-white',
+                        'accepted_with_errors': 'bg-warning text-dark',
+                        'rejected': 'bg-danger text-white',
+                        'error': 'bg-danger text-white',
+                        'canceled': 'bg-secondary text-white',
+                        'duplicated': 'bg-primary text-white'
+                    }}">
+                </field>
+
+            </xpath>
+        </field>
+    </record>
+</odoo>

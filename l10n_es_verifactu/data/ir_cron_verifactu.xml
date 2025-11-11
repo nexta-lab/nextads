@@ -1,0 +1,31 @@
+<odoo>
+  <data noupdate="0">
+
+    <!-- Acción de servidor que llama al servicio periódico -->
+    <record id="ir_actions_server_verifactu_send_periodic" model="ir.actions.server">
+      <field name="name">Enviar facturas VeriFactu (periódico)</field>
+      <field name="state">code</field>
+      <!-- evitamos depender de model_verifactu_cron_service -->
+      <field name="model_id" ref="base.model_ir_actions_server"/>
+      <field name="code">env['verifactu.cron.service'].run()</field>
+    </record>
+
+    <!-- CRON periódico que ejecuta la acción de arriba -->
+    <record id="ir_cron_send_pending_verifactu" model="ir.cron">
+      <field name="name">Enviar facturas VeriFactu pendientes</field>
+      <field name="active">False</field>
+      <field name="interval_number">10</field>
+      <field name="interval_type">minutes</field>
+      <field name="numbercall">-1</field>
+      <field name="doall">False</field>
+      <field name="model_id" ref="base.model_ir_actions_server"/>
+      <field name="state">code</field>
+      <field name="code">
+        env['ir.actions.server'].browse(ref('l10n_es_verifactu.ir_actions_server_verifactu_send_periodic')).run()
+      </field>
+      <field name="user_id" ref="base.user_root"/>
+      <field name="cron_name">Enviar facturas VeriFactu pendientes</field>
+    </record>
+
+  </data>
+</odoo>

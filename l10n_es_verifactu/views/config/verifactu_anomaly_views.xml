@@ -1,0 +1,56 @@
+<odoo>
+  <data>
+
+    <record id="view_verifactu_anomaly_tree" model="ir.ui.view">
+      <field name="name">verifactu.anomaly.tree</field>
+      <field name="model">verifactu.anomaly</field>
+      <field name="arch" type="xml">
+        <tree string="Anomalías">
+          <field name="detected_at"/>
+          <field name="move_id"/>
+          <field name="anomaly_type"/>
+          <field name="severity"/>
+          <field name="message"/>
+          <field name="resolved"/>
+        </tree>
+      </field>
+    </record>
+
+    <record id="view_verifactu_anomaly_form" model="ir.ui.view">
+      <field name="name">verifactu.anomaly.form</field>
+      <field name="model">verifactu.anomaly</field>
+      <field name="arch" type="xml">
+        <form string="Anomalía">
+          <sheet>
+            <group>
+              <field name="company_id" readonly="1"/>
+              <field name="move_id" readonly="1"/>
+              <field name="anomaly_type" readonly="1"/>
+              <field name="severity" readonly="1"/>
+              <field name="detected_at" readonly="1"/>
+              <field name="resolved"/>
+              <field name="resolved_at" readonly="1"/>
+            </group>
+            <group>
+              <field name="message" readonly="1" nolabel="1"/>
+            </group>
+          </sheet>
+          <footer>
+            <button name="action_mark_resolved" type="object" string="Marcar resuelta"
+                    class="btn-primary" attrs="{'invisible':[('resolved','=',True)]}"/>
+            <button string="Cerrar" class="btn-secondary" special="cancel"/>
+          </footer>
+        </form>
+      </field>
+    </record>
+
+    <record id="action_verifactu_anomalies" model="ir.actions.act_window">
+      <field name="name">Anomalías VeriFactu</field>
+      <field name="res_model">verifactu.anomaly</field>
+      <field name="view_mode">tree,form</field>
+      <field name="context">{}</field>
+      <field name="domain">[]</field>
+    </record>
+
+  </data>
+</odoo>

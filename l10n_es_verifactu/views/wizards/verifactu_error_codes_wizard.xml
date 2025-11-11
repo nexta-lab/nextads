@@ -1,0 +1,18 @@
+<odoo>
+  <record id="view_verifactu_error_codes_wizard" model="ir.ui.view">
+    <field name="name">verifactu.error.codes.wizard.form</field>
+    <field name="model">verifactu.error.codes.wizard</field>
+    <field name="arch" type="xml">
+      <form string="Códigos de Error VeriFactu">
+        <sheet>
+          <div class="o_form_sheet_full">
+            <field name="error_text" nolabel="1" readonly="1" widget="text" style="height: 1000px;"/>
+          </div>
+        </sheet>
+        <footer>
+          <button string="Cerrar" class="btn-secondary" special="cancel"/>
+        </footer>
+      </form>
+    </field>
+  </record>
+</odoo>

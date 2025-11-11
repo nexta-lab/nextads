@@ -1,0 +1,18 @@
+# VeriFactu core (firma, XML, QR, licencias)
+signxml==3.2.2
+cryptography==38.0.4
+pyOpenSSL==22.0.0
+lxml[html_clean]
+qrcode==7.4.2
+PyJWT==2.9.0
+
+# Dependencias auxiliares
+requests==2.32.3       # llamadas HTTP al servidor de licencias/updates
+packaging==24.1        # comparación robusta de versiones en update checker
+
+# (Opcional pero recomendado en Odoo)
+python-dateutil==2.9.0.post0  # manejo de fechas (AEAT, Firestore timestamps)
+
+#-----------------------------------------------------------------------------------------------
+# Todo en uno
+# pip install signxml==3.2.2 cryptography==38.0.4 pyOpenSSL==22.0.0 "lxml[html_clean]" qrcode==7.4.2 PyJWT==2.9.0 requests==2.32.3 packaging==24.1 python-dateutil==2.9.0.post0

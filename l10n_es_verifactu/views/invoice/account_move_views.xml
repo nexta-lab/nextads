@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+	<record id="view_move_form_verifactu" model="ir.ui.view">
+		<field name="name">account.move.verifactu.form</field>
+		<field name="model">account.move</field>
+		<field name="inherit_id" ref="account.view_move_form"/>
+		<field name="arch" type="xml">
+
+			<!-- Botones en el header (solo en facturas de cliente) -->
+			<xpath expr="//sheet//group" position="inside">
+				<field name="move_type" invisible="1"/>
+			</xpath>
+
+
+			<xpath expr="//header" position="inside">
+
+				<!-- Campo auxiliar para condiciones -->
+				<field name="is_rectificativa_bool" invisible="1"/>
+
+				<!-- ──────────────────────────────── -->
+				<!-- Procesar VeriFactu -->
+				<!-- ──────────────────────────────── -->
+				<button name="send_xml"
+						type="object"
+						string="Procesar VeriFactu"
+						class="btn-primary"
+						attrs="{
+							'invisible': [
+								'|',
+								('is_rectificativa_bool','=',True),
+								'|',
+								('move_type','not in',['out_invoice','out_refund','out_receipt']),
+								'|',
+								('state','!=','posted'),
+								('verifactu_status','!=','pending')
+							]
+						}"/>
+
+				<button name="send_xml"
+						type="object"
+						string="Procesar Rectificativa VeriFactu"
+						class="btn-primary"
+						attrs="{
+							'invisible': [
+								'|',
+								('is_rectificativa_bool','=',False),
+								'|',
+								('move_type','not in',['out_invoice','out_refund','out_receipt']),
+								'|',
+								('state','!=','posted'),
+								('verifactu_status','!=','pending')
+							]
+						}"/>
+
+				<!-- ──────────────────────────────── -->
+				<!-- Reenviar VeriFactu -->
+				<!-- ──────────────────────────────── -->
+				<button name="send_xml"
+						type="object"
+						string="Reenviar VeriFactu"
+						class="btn-primary"
+						icon="fa-tools"
+						attrs="{
+							'invisible': [
+								'|',
+								('is_rectificativa_bool','=',True),
+								'|',
+								('move_type','not in',['out_invoice','out_refund','out_receipt']),
+								'|',
+								('state','!=','posted'),
+								('verifactu_status','not in',['sent','accepted_with_errors'])
+							]
+						}"/>
+
+				<button name="send_xml"
+						type="object"
+						string="Reenviar Rectificativa VeriFactu"
+						class="btn-primary"
+						icon="fa-tools"
+						attrs="{
+							'invisible': [
+								'|',
+								('is_rectificativa_bool','=',False),
+								'|',
+								('move_type','not in',['out_invoice','out_refund','out_receipt']),
+								'|',
+								('state','!=','posted'),
+								('verifactu_status','not in',['sent','accepted_with_errors'])
+							]
+						}"/>
+
+				<!-- ──────────────────────────────── -->
+				<!-- Subsanar VeriFactu -->
+				<!-- ──────────────────────────────── -->
+				<button name="send_xml"
+						type="object"
+						string="Subsanar VeriFactu"
+						class="btn-primary"
+						icon="fa-tools"
+						attrs="{
+							'invisible': [
+								'|',
+								('is_rectificativa_bool','=',True),
+								'|',
+								('move_type','not in',['out_invoice','out_refund','out_receipt']),
+								'|',
+								('state','!=','posted'),
+								('verifactu_status','not in',['error','rejected'])
+							]
+						}"/>
+
+				<button name="send_xml"
+						type="object"
+						string="Subsanar Rectificativa VeriFactu"
+						class="btn-primary"
+						icon="fa-tools"
+						attrs="{
+							'invisible': [
+								'|',
+								('is_rectificativa_bool','=',False),
+								'|',
+								('move_type','not in',['out_invoice','out_refund','out_receipt']),
+								'|',
+								('state','!=','posted'),
+								('verifactu_status','not in',['error','rejected'])
+							]
+						}"/>
+
+			</xpath>
+
+
+			<!-- Pestaña VeriFactu (solo facturas de cliente) -->
+			<xpath expr="//sheet/notebook" position="inside">
+				<page string="VeriFactu"
+					  attrs="{'invisible': [('move_type','not in',['out_invoice','out_refund','out_receipt'])]}">
+
+					<group>
+						<field name="verifactu_sent" readonly="1"/>
+						<field name="verifactu_sent_with_errors" readonly="1"/>
+						<field name="verifactu_status" readonly="1"/>
+						<field name="verifactu_hash" readonly="1"/>
+						<field name="verifactu_previous_hash" readonly="1"/>
+						<field name="verifactu_processed" attrs="{'invisible': True}"/>
+						<field name="verifactu_is_active" attrs="{'invisible': True}"/>
+						<field name="verifactu_generated" attrs="{'invisible': True}"/>
+						<field name="verifactu_qr_url" widget="url" attrs="{'invisible': [('verifactu_qr_url', '=', False)]}"/>
+
+						<separator string="Descargar Archivos VeriFactu"/>
+						<div class="btn-group1" style="display: inline-flex; gap: 10px;">
+							<button name="open_verifactu_xml"
+									type="object"
+									string="Descargar XML VeriFactu"
+									class="btn-secondary1"
+									icon="fa-download"
+									style="white-space: nowrap; padding: 8px 16px; min-width: 180px;"
+									attrs="{'invisible': [('verifactu_generated', '=', False)]}"/>
+
+							<button name="open_verifactu_soap_xml"
+									type="object"
+									string="Descargar XML SOAP VeriFactu"
+									class="btn-secondary"
+									icon="fa-download"
+									style="white-space: nowrap; padding: 8px 16px; min-width: 180px;"
+									attrs="{'invisible': [('verifactu_generated', '=', False)]}"/>
+
+							<button name="open_verifactu_qr"
+									type="object"
+									string="Descargar QR VeriFactu"
+									class="btn-secondary3"
+									icon="fa-qrcode"
+									style="white-space: nowrap; padding: 8px 16px; min-width: 180px;"
+									attrs="{'invisible': [('verifactu_generated', '=', False)]}"/>
+						</div>
+
+						<separator string="Verificaciones"/>
+						<div class="btn-group" style="display: inline-flex; gap: 10px;">
+							<button name="verify_verifactu_hash"
+									type="object"
+									string="Comprobar Encadenamiento"
+									class="btn-dark"
+									icon="fa-link"
+									style="white-space: nowrap; padding: 8px 16px; min-width: 180px;"/>
+
+							<button name="verify_verifactu_signature"
+									type="object"
+									string="Verificar Firma Electrónica"
+									class="btn-success"
+									style="white-space: nowrap; padding: 8px 16px; min-width: 180px;"
+									icon="fa-key"/>
+
+							<button name="detect_anomalies"
+									type="object"
+									string="Verificar Integridad"
+									class="btn-warning"
+									style="white-space: nowrap; padding: 8px 16px; min-width: 180px;"
+									icon="fa-shield-alt"/>
+
+							
+						</div>
+
+						<separator string="Registros de Eventos VeriFactu"/>
+						<div class="btn-group" style="display: inline-flex; gap: 10px;">
+							<button name="open_requirement_wizard"
+									type="object"
+									string="Cod. Requerimiento"
+									class="btn-warning"
+									icon="fa-play"
+									style="white-space: nowrap; padding: 8px 16px; min-width: 180px;"/>
+
+
+							<button name="export_event_records"
+									type="object"
+									string="Exportar Registros de Eventos"
+									class="btn-info"
+									icon="fa-download"
+									style="white-space: nowrap; padding: 8px 16px; min-width: 180px;"/>
+
+							<button name="log_backup_restore"
+									type="object"
+									string="Restaurar desde Copia de Seguridad"
+									class="btn-outline-secondary"
+									icon="fa-undo"
+									style="white-space: nowrap; padding: 8px 16px; min-width: 180px;"/>
+						</div>
+
+						<separator string="Historial de Eventos"/>
+						<field name="verifactu_event_logs" widget="many2many_tags" readonly="1"/>
+
+						<separator string="Gestión de Errores"
+								   attrs="{'invisible': [('verifactu_status','not in',['error','rejected','accepted_with_errors'])]}"/>
+						<div class="btn-group"
+							 style="display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-start; width: max-content;">
+							<button name="view_verifactu_error"
+									type="object"
+									string="Ver Error en detalle"
+									class="btn-warning"
+									icon="fa-exclamation-circle"
+									style="white-space: nowrap; padding: 8px 16px; min-width: 180px;"
+									attrs="{'invisible': [('verifactu_status','not in',['error','rejected','accepted_with_errors'])]}"/>
+
+							<button name="open_error_wizard"
+									type="object"
+									string="Ver códigos de error"
+									class="oe_highlight"
+									style="white-space: nowrap; padding: 8px 16px; min-width: 180px;"
+									attrs="{'invisible': [('verifactu_status','not in',['error','rejected','accepted_with_errors'])]}"/>
+						</div>
+
+						<separator string="Histórico de Estados VeriFactu"/>
+						<field name="verifactu_status_logs">
+							<tree readonly="1" style="word-wrap: break-word; white-space: normal;">
+								<field name="date" string="Fecha"/>
+								<field name="status" string="Estado"/>
+								<field name="user_id" string="Usuario"/>
+
+								<field name="hash_previo" string="Hash previo"
+									widget="char"
+									style="max-width:300px; white-space:normal; word-break:break-all;"/>
+								<field name="hash_actual" string="Hash actual"
+									widget="char"
+									style="max-width:300px; white-space:normal; word-break:break-all;"/>
+
+								<field name="aeat_code" string="Código AEAT" optional="show"/>
+
+								<!-- Mostrar icono de descarga si hay XML -->
+								<field name="xml_soap" string="XML SOAP" widget="binary"/>
+							</tree>
+						</field>
+
+						<separator string="Anulación"/>
+						<div class="btn-group" style="display: inline-flex; gap: 10px;">
+							<button name="generate_verifactu_anulacion"
+									type="object"
+									string="Anular Factura VeriFactu"
+									class="btn-danger"
+									icon="fa-times-circle"
+									style="white-space: nowrap; padding: 8px 16px; min-width: 180px;"/>
+						</div>
+					</group>
+				</page>
+			</xpath>
+		</field>
+	</record>
+</odoo>

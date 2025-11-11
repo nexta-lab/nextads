@@ -1,2 +1,11 @@
 bravado_core
 jsonschema==3.2.0
+signxml
+cryptography
+lxml
+signxml
+qrcode
+PyJWT
+requests
+packaging
+

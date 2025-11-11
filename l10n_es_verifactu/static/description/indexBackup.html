@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Módulo de VeriFactu</title>
+</head>
+
+<body>
+
+  <!-- INTRO -->
+  <section style="font-family: 'Helvetica', sans-serif; padding: 40px;">
+    <h1 style="text-align: center; font-size: 46px;">CUMPLE CON LA NORMATIVA DE <span
+        style="color: #40517a;">FACTURACIÓN</span></h1>
+    <br>
+    <div
+      style="max-width: 900px; margin: 0 auto; padding: 40px; border-radius: 20px; background: linear-gradient(135deg, #f16362, #00b2cc); color: white; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.2);">
+      <h1 style="font-size: 36px; margin-bottom: 10px;">Módulo VeriFactu</h1>
+      <span
+        style="background-color: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 999px; font-weight: bold; font-size: 14px; display: inline-block; margin-bottom: 20px;">🇪🇸
+        Español</span>
+      <p style="font-size: 18px; margin-bottom: 20px;">
+        Asegura el cumplimiento de la normativa <strong>VeriFactu</strong> en tus facturas con Odoo. Automatiza la firma
+        digital, registro de hashes y sincronización en tiempo real con la AEAT para evitar sanciones y simplificar la
+        gestión fiscal.
+      </p>
+      <p style="font-style: italic; font-size: 15px; margin-bottom: 10px;">
+        Este módulo cumple con los requisitos técnicos establecidos por la AEAT en el Real Decreto 1007/2023 y ha sido
+        validado en el entorno oficial de pruebas.
+      </p>
+      <p style="font-style: italic; font-size: 15px;">
+        ⚠️ En caso de cambios futuros en la normativa, podrían requerirse actualizaciones.
+      </p>
+    </div>
+  </section>
+
+
+
+  <br>
+
+  <!-- FEATURES -->
+  <section style="font-family: 'Helvetica', sans-serif; padding: 40px;">
+    <h2 style="text-align: center; font-size: 32px;">Características <span style="color: #00b050;">destacadas</span>
+    </h2>
+
+    <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; margin-top: 30px;">
+
+      <!-- Tarjeta genérica -->
+      <div
+        style="flex: 1 1 30%; max-width: 300px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 20px; text-align: center;">
+        <div
+          style="width: 60px; height: 60px; margin: 0 auto 10px; border-radius: 50%; background-color: #c8e6c9; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+          🔐</div>
+        <h4>Firma digital segura</h4>
+        <p>Protege tus facturas con firma electrónica avanzada.</p>
+      </div>
+
+      <div
+        style="flex: 1 1 30%; max-width: 300px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 20px; text-align: center;">
+        <div
+          style="width: 60px; height: 60px; margin: 0 auto 10px; border-radius: 50%; background-color: #c8e6c9; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+          🔄</div>
+        <h4>Sincronización automática</h4>
+        <p>Envía facturas en tiempo real a la AEAT.</p>
+      </div>
+
+      <div
+        style="flex: 1 1 30%; max-width: 300px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 20px; text-align: center;">
+        <div
+          style="width: 60px; height: 60px; margin: 0 auto 10px; border-radius: 50%; background-color: #c8e6c9; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+          ✅</div>
+        <h4>Validación de facturas</h4>
+        <p>Verifica el estado de tus facturas y evita errores.</p>
+      </div>
+
+      <div
+        style="flex: 1 1 30%; max-width: 300px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 20px; text-align: center;">
+        <div
+          style="width: 60px; height: 60px; margin: 0 auto 10px; border-radius: 50%; background-color: #c8e6c9; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+          🗓️</div>
+        <h4>Historial completo</h4>
+        <p>Mantén un registro de todas tus facturas enviadas.</p>
+      </div>
+
+      <div
+        style="flex: 1 1 30%; max-width: 300px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 20px; text-align: center;">
+        <div
+          style="width: 60px; height: 60px; margin: 0 auto 10px; border-radius: 50%; background-color: #c8e6c9; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+          📄</div>
+        <h4>Generación de XML</h4>
+        <p>Crea archivos XML conforme a las normativas.</p>
+      </div>
+
+      <div
+        style="flex: 1 1 30%; max-width: 300px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 20px; text-align: center;">
+        <div
+          style="width: 60px; height: 60px; margin: 0 auto 10px; border-radius: 50%; background-color: #c8e6c9; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+          🔳</div>
+        <h4>Código QR en Factura</h4>
+        <p>Incluye códigos QR conforme a VeriFactu.</p>
+      </div>
+
+      <div
+        style="flex: 1 1 30%; max-width: 300px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 20px; text-align: center;">
+        <div
+          style="width: 60px; height: 60px; margin: 0 auto 10px; border-radius: 50%; background-color: #c8e6c9; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+          🛡️</div>
+        <h4>Verificación de integridad</h4>
+        <p>Comprueba la autenticidad de cada documento.</p>
+      </div>
+
+      <div
+        style="flex: 1 1 30%; max-width: 300px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 20px; text-align: center;">
+        <div
+          style="width: 60px; height: 60px; margin: 0 auto 10px; border-radius: 50%; background-color: #c8e6c9; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+          ⚙️</div>
+        <h4>Envío automático por CRON</h4>
+        <p>Envía las facturas cada pocos minutos sin intervención manual.</p>
+      </div>
+
+      <div
+        style="flex: 1 1 30%; max-width: 300px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 20px; text-align: center;">
+        <div
+          style="width: 60px; height: 60px; margin: 0 auto 10px; border-radius: 50%; background-color: #c8e6c9; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+          ♻️</div>
+        <h4>Reenvío inteligente</h4>
+        <p>Reintenta automáticamente facturas con errores o duplicados.</p>
+      </div>
+
+      <div
+        style="flex: 1 1 30%; max-width: 300px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 20px; text-align: center;">
+        <div
+          style="width: 60px; height: 60px; margin: 0 auto 10px; border-radius: 50%; background-color: #c8e6c9; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+          🏢</div>
+        <h4>Soporte multiempresa</h4>
+        <p>Totalmente compatible con múltiples empresas en Odoo.</p>
+      </div>
+
+      <div
+        style="flex: 1 1 30%; max-width: 300px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 20px; text-align: center;">
+        <div
+          style="width: 60px; height: 60px; margin: 0 auto 10px; border-radius: 50%; background-color: #c8e6c9; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+          🖨️</div>
+        <h4>Compatible con PDF estándar</h4>
+        <p>Inserta el QR automáticamente en tus informes.</p>
+      </div>
+
+      <div
+        style="flex: 1 1 30%; max-width: 300px; background: #fff; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); padding: 20px; text-align: center;">
+        <div
+          style="width: 60px; height: 60px; margin: 0 auto 10px; border-radius: 50%; background-color: #c8e6c9; display: flex; align-items: center; justify-content: center; font-size: 32px; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
+          🧩</div>
+        <h4>Modular y extensible</h4>
+        <p>Puede integrarse con otros módulos contables.</p>
+      </div>
+
+    </div>
+  </section>
+
+
+
+  <br>
+
+  <!-- DEPENDENCIAS PYTHON -->
+  <div align="center"
+    style="max-width: 900px; margin: 20px auto; padding: 20px; border: 2px solid #f16362; border-radius: 12px; background-color: #fff5f5; font-family: Arial, sans-serif;">
+    <h3 style="color: #c0392b;">⚠️ Requisitos técnicos</h3>
+    <p style="font-size: 16px; color: #333; margin: 10px 0;">
+      Este módulo requiere algunos paquetes adicionales de Python para funcionar correctamente:
+    </p>
+    <code
+      style="display: inline-block; padding: 10px; background: #f8f8f8; border: 1px solid #ccc; border-radius: 6px; font-size: 14px;">
+    signxml==3.2.2<br>
+    cryptography==38.0.4<br>
+    pyOpenSSL==22.0.0<br>
+    lxml[html_clean]
+  </code>
+    <p style="margin-top: 15px; font-size: 15px;">
+      Puedes instalarlos con:
+    </p>
+    <code
+      style="display: inline-block; padding: 8px 12px; background: #f0f0f0; border-radius: 5px; font-size: 14px;">pip install -r requirements.txt</code>
+    <p style="font-size: 14px; color: #777; margin-top: 10px;">
+      Más información en el README incluido.
+    </p>
+  </div>
+  <br>
+  <!-- GIF -->
+  <div align="center">
+    <img
+      src="https://firebasestorage.googleapis.com/v0/b/odoo-modules-images.firebasestorage.app/o/verifactu%2FveriGif.gif?alt=media&token=37463736-44cd-497e-a74b-f80ff61eab7d"
+      alt="Jira Odoo Demo" style="max-width: 100%; border-radius: 10px;">
+  </div>
+
+  <br>
+
+  <table align="center" width="100%" style="max-width: 1000px;">
+    <tr>
+      <td colspan="2" align="center">
+        <!-- SUPPORT -->
+        <a >
+          <section style="font-family: 'Helvetica', sans-serif; padding: 40px;">
+            <div
+              style="max-width: 900px; margin: 0 auto; padding: 40px; border-radius: 20px; background: linear-gradient(135deg, #00b2cc, #106f6c); color: white; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.2);">
+              <h2 style="font-size: 30px; margin-bottom: 20px; color: #ffffff; text-decoration: none !important;">
+                Soporte</h2>
+              <p style="font-size: 18px; margin-bottom: 20px; text-decoration: none; color: #ffffff;">
+                ¿Necesitas ayuda o tienes preguntas? Estamos aquí para ayudarte.
+              </p>
+              <p style="font-size: 16px; margin: 6px 0;">📧 Email: <a href="mailto:rubikdevodoo@gmail.com"
+                  target="_blank" style="color: #fff; text-decoration: underline;">rubikdevodoo@gmail.com</a></p>
+              <p style="font-size: 16px; margin: 6px 0;">🌐 Website: <a href="https://www.mrrubik.com" target="_blank"
+                  style="color: #fff; text-decoration: underline;">www.mrrubik.com</a></p>
+              <p style="font-size: 16px; margin: 6px 0;">💻 YouTube: <a href="https://www.youtube.com/@rubikdev"
+                  target="_blank" style="color: #fff; text-decoration: underline;">@rubikdev</a></p>
+              <p style="margin-top: 30px; font-size: 15px; color: #e0ff66;">
+                Incluye <strong style="color: #ffffff;">30 días de soporte gratuito</strong> a partir de la fecha de
+                compra.
+              </p>
+            </div>
+          </section>
+
+        </a>
+      </td>
+    </tr>
+    <tr>
+      <td align="center">
+        <!-- DEMO -->
+        <a href="https://youtu.be/pXDWJpUgsCY" target="_blank">
+          <img
+            src="https://firebasestorage.googleapis.com/v0/b/odoo-modules-images.firebasestorage.app/o/jiraConnector%2Fjira4.png?alt=media&token=1a99721c-70a1-4f2b-92c8-46d2cb02712a"
+            alt="Demo" width="100%" />
+        </a>
+      </td>
+      <td align="center">
+        <!-- CONFIGURATION VIDEO -->
+        <a href="https://www.youtube.com/watch?v=2vueNLyU5qQ" target="_blank">
+          <img
+            src="https://firebasestorage.googleapis.com/v0/b/odoo-modules-images.firebasestorage.app/o/jiraConnector%2Fjira5.png?alt=media&token=277b4f54-e4ec-425a-a257-c29104cbaa53"
+            alt="Configuration" width="100%" />
+        </a>
+      </td>
+
+    </tr>
+    <tr>
+      <td colspan="2" align="center">
+        <!-- Ayuda -->
+        <a>
+          <section style="
+  max-width: 850px;
+  margin: 40px auto;
+  padding: 30px 20px;
+  border-radius: 18px;
+  text-align: center;
+  background: linear-gradient(90deg, #d62caa, #6e1a90);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  color: #fff; text-decoration: none !important;
+  font-family: 'Helvetica', sans-serif;
+">
+            <h2 style="font-size: 26px; font-weight: bold; margin-bottom: 15px;">
+              ¿Necesitas un módulo a medida en Odoo?
+            </h2>
+            <p style="font-size: 17px; margin-bottom: 5px;">
+              Desarrollos personalizados, integraciones inteligentes y soluciones listas para producción.
+            </p>
+            <p style="font-size: 17px;">
+              ¡Dime qué necesitas y lo hago realidad!
+            </p>
+          </section>
+
+        </a>
+      </td>
+    </tr>
+  </table>
+
+
+</body>
+
+</html>

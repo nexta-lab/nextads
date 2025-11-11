@@ -1,0 +1,60 @@
+<odoo>
+  <!-- TREE -->
+  <record id="view_verifactu_mode_history_tree" model="ir.ui.view">
+    <field name="name">verifactu.mode.history.tree</field>
+    <field name="model">verifactu.mode.history</field>
+    <field name="arch" type="xml">
+      <tree string="Histórico de modos" create="0" delete="0">
+        <field name="change_date" string="Fecha" widget="datetime"/>
+        <field name="mode" string="Modo"/>
+        <field name="user_id" string="Usuario"/>
+        <field name="company_id" groups="base.group_no_one"/> <!-- opcional/oculto -->
+        <field name="notes" string="Comentario"/>
+      </tree>
+    </field>
+  </record>
+
+  <!-- SEARCH (opcional pero útil) -->
+  <record id="view_verifactu_mode_history_search" model="ir.ui.view">
+    <field name="name">verifactu.mode.history.search</field>
+    <field name="model">verifactu.mode.history</field>
+    <field name="arch" type="xml">
+      <search string="Buscar en histórico">
+        <field name="mode"/>
+        <field name="user_id"/>
+        <filter name="mode_vf" string="VeriFactu" domain="[('mode','=','verifactu')]"/>
+        <filter name="mode_nvf" string="No VeriFactu" domain="[('mode','=','no_verifactu')]"/>
+        <filter name="today" string="Hoy" domain="[('change_date','&gt;=', context_today().strftime('%%Y-%%m-%%d 00:00:00'))]"/>
+      </search>
+    </field>
+  </record>
+
+  <!-- FORM (mínimo) -->
+  <record id="view_verifactu_mode_history_form" model="ir.ui.view">
+    <field name="name">verifactu.mode.history.form</field>
+    <field name="model">verifactu.mode.history</field>
+    <field name="arch" type="xml">
+      <form string="Registro de cambio" create="0" edit="0" delete="0">
+        <group>
+          <field name="change_date" readonly="1"/>
+          <field name="mode" readonly="1"/>
+          <field name="user_id" readonly="1"/>
+          <field name="company_id" readonly="1"/>
+          <field name="notes" readonly="1"/>
+        </group>
+      </form>
+    </field>
+  </record>
+
+  <!-- Acción (por si quieres lanzarla desde menú o desde el botón) -->
+  <record id="action_verifactu_mode_history" model="ir.actions.act_window">
+    <field name="name">Histórico de modos VeriFactu</field>
+    <field name="res_model">verifactu.mode.history</field>
+    <field name="view_mode">tree,form</field>
+    <field name="view_id" ref="view_verifactu_mode_history_tree"/>
+    <field name="search_view_id" ref="view_verifactu_mode_history_search"/>
+    <field name="domain">[('company_id','=',uid and user.company_id.id)]</field>
+    <field name="context">{}</field>
+    <field name="target">current</field>
+  </record>
+</odoo>

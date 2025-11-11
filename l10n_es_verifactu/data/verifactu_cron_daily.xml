@@ -1,0 +1,28 @@
+<odoo>
+  <!-- Acción de servidor: llama al servicio diario por env[] -->
+  <record id="ir_actions_server_verifactu_send_daily" model="ir.actions.server">
+    <field name="name">Enviar facturas VeriFactu (diario)</field>
+    <field name="state">code</field>
+    <!-- No dependemos de model_verifactu_cron_daily_service -->
+    <field name="model_id" ref="base.model_ir_actions_server"/>
+    <field name="code">env['verifactu.cron.daily.service'].run()</field>
+  </record>
+
+  <!-- CRON diario (desactivado; set_values ajusta nextcall y active) -->
+  <record id="ir_cron_verifactu_send_daily" model="ir.cron">
+    <field name="name">Enviar facturas VeriFactu (diario)</field>
+    <field name="active">False</field>
+    <field name="interval_number">1</field>
+    <field name="interval_type">days</field>
+    <field name="numbercall">-1</field>
+    <field name="doall">False</field>
+    <field name="model_id" ref="base.model_ir_actions_server"/>
+    <field name="state">code</field>
+    <field name="code">
+      env['ir.actions.server'].browse(ref('l10n_es_verifactu.ir_actions_server_verifactu_send_daily')).run()
+    </field>
+    <field name="nextcall">2000-01-01 03:00:00</field>
+    <field name="user_id" ref="base.user_root"/>
+    <field name="cron_name">Enviar facturas VeriFactu (diario)</field>
+  </record>
+</odoo>

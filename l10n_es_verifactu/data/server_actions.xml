@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Acción de servidor para convertir pedido TPV en factura completa -->
+    <record id="pos_order_action_generate_full_invoice" model="ir.actions.server">
+        <field name="name">Generar factura completa</field>
+        <field name="model_id" ref="point_of_sale.model_pos_order"/>
+        <field name="binding_model_id" ref="point_of_sale.model_pos_order"/>
+        <field name="state">code</field>
+        <field name="binding_type">action</field>
+        <field name="code">
+            action = records.action_convert_to_full_invoice()
+        </field>
+    </record>
+
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+  <data>
+
+    <!-- PDF por defecto -->
+    <record id="verifactu_declaracion_default_attachment" model="ir.attachment">
+      <field name="name">Declaracion Responsable VeriFactu.pdf</field>
+      <!-- Mueve el PDF a una ruta sin espacios/tildes -->
+      <field name="datas" type="base64" file="l10n_es_verifactu/Documents/DECLARACION_RESPONSABLE_DE_CUMPLIMIENTO.pdf"/>
+      <field name="mimetype">application/pdf</field>
+      <!-- NO usar <field name="public">True</field> para compatibilidad -->
+    </record>
+
+    <!-- Guardar el id en ICP -->
+    <record id="param_verifactu_declaracion_attachment_id" model="ir.config_parameter">
+      <field name="key">verifactu.declaracion_attachment_id</field>
+      <field name="value" eval="str(ref('l10n_es_verifactu.verifactu_declaracion_default_attachment'))"/>
+    </record>
+
+  </data>
+</odoo>

@@ -1,0 +1,30 @@
+.verifactu-settings-form .o_form_buttons {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+}
+
+.verifactu-settings-form .o_form_buttons button {
+    flex-grow: 1;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-weight: bold;
+}
+
+.verifactu-settings-form .btn-primary {
+    background-color: #106f6c !important;
+    border-color: #106f6c !important;
+    color: #fff !important;
+}
+
+.verifactu-settings-form .btn-success {
+    background-color: #00b2cc !important;
+    border-color: #00b2cc !important;
+    color: #fff !important;
+}
+
+.verifactu-settings-form .btn-secondary {
+    background-color: #f16362 !important;
+    border-color: #f16362 !important;
+    color: #fff !important;
+}

@@ -58,3 +58,8 @@
 	path = oca-mis-builder
 	url = git@github.com:Nexta-Digital-Solutions/oca-mis-builder.git
 	branch = main
+
+[submodule "OCA/account-invoicing"]
+	path = OCA/account-invoicing
+	url = git@github.com:OCA/account-invoicing.git
+	branch = 16.0

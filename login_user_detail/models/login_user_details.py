@@ -36,11 +36,19 @@ class LoginUserDetail(models.Model):
     @api.model
     def _check_credentials(self, password, user_agent_env):
         result = super(LoginUserDetail, self)._check_credentials(password, user_agent_env)
-        ip_address = request.httprequest.environ['REMOTE_ADDR']
-        vals = {'name': self.name,
-                'ip_address': ip_address
-                }
-        self.env['login.detail'].sudo().create(vals)
+        
+        # CORRECCIÓN: Solo intentar registrar la IP si hay un objeto request activo
+        # Esto evita el error 'object unbound' en llamadas API/XML-RPC
+        if request:
+            try:
+                ip_address = request.httprequest.environ.get('REMOTE_ADDR', '')
+                vals = {'name': self.name,
+                        'ip_address': ip_address
+                        }
+                self.env['login.detail'].sudo().create(vals)
+            except Exception:
+                pass
+                
         return result
 
 

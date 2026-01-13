@@ -27,7 +27,7 @@
 <!--        <attribute name="t-if">1!=1</attribute>-->
 <!--    </xpath>-->
 
-     <xpath expr="//p[@t-if='o.invoice_payment_term_id']" position="after">
+     <xpath expr="//div[@name='payment_term']" position="after">
         <p t-if="o.payment_mode_id">
            <strong>Payment mode: </strong>
            <span t-field="o.payment_mode_id"/>

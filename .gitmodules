@@ -54,3 +54,7 @@
 	path = OCA/mis-builder
 	url = https://github.com/oca/mis-builder
 	branch = 18.0
+[submodule "Nexta-Digital-Solutions/nexta-tools-18"]
+	path = Nexta-Digital-Solutions/nexta-tools-18
+	url = https://github.com/Nexta-Digital-Solutions/nexta-tools-18
+	branch = main

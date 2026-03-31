@@ -21,11 +21,11 @@ class ProjectTask(models.Model):
     )
 
     _sql_constraints = [
-        (
-            "project_task_unique_code",
-            "UNIQUE (company_id, code)",
-            "The code must be unique!",
-        ),
+        #(
+        #    "project_task_unique_code",
+        #    "UNIQUE (company_id, code)",
+        #    "The code must be unique!",
+        #),
     ]
 
     @property

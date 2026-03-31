@@ -3,7 +3,7 @@
 {
     "name": "Pre init custom css",
     "summary": "Crea el fichero custom.css para evitar fallos",
-    "version": "14.0.1.0.3",
+    "version": "18.0.1.0.3",
     "author": "NextaDS",
     "maintainers": ["Nextads"],
     "website": "https://www.nextads.es",

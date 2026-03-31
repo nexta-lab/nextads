@@ -20,7 +20,7 @@
 ################################################################################
 {
     'name': 'Project Sprint',
-    'version': '16.0.1.0.0',
+    'version': '18.0.1.0.0',
     'category': 'Project',
     'summary': 'A sprint is a fixed time period where teams complete work from'
                ' their product backlog',

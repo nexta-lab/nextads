@@ -50,11 +50,6 @@
 	path = Nexta-Digital-Solutions/nexta-tools-16
 	url = git@github.com:Nexta-Digital-Solutions/nexta-tools-16
 	branch = main
-[submodule "oca-mis-builder"]
-	path = oca-mis-builder
-	url = git@github.com:Nexta-Digital-Solutions/oca-mis-builder.git
-	branch = main
-
 [submodule "OCA/account-invoicing"]
 	path = OCA/account-invoicing
 	url = git@github.com:OCA/account-invoicing.git

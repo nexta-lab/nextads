@@ -22,7 +22,7 @@
     'license': "LGPL-3",
 
     'category': 'Account',
-    'version': '15.2.5',
+    'version': '18.0.2.5',
 
     'depends': ['sale_management',
                 'sale',

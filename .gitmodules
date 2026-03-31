@@ -54,3 +54,7 @@
 	path = OCA/account-invoicing
 	url = git@github.com:OCA/account-invoicing.git
 	branch = 16.0
+[submodule "OCA/mis-builder"]
+	path = OCA/mis-builder
+	url = https://github.com/oca/mis-builder
+	branch = 18.0

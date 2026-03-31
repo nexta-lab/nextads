@@ -19,11 +19,11 @@ class ProjectTask(models.Model):
         readonly=True,
         copy=False,
     )
-    #UNIQUE (company_id, code)
+
     _sql_constraints = [
         (
             "project_task_unique_code",
-            "Check(1=1)",
+            "UNIQUE (company_id, code)",
             "The code must be unique!",
         ),
     ]

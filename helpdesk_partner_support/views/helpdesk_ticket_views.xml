@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="helpdesk_ticket_view_form_inherit_partner_support" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.form.inherit.partner.support</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_ticket_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_id'][hasclass('field_partner_id')]" position="after">
+                <field name="partner_support"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="helpdesk_tickets_view_tree_inherit_partner_support" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.list.inherit.partner.support</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_tickets_view_tree"/>
+        <field name="arch" type="xml">
+            <field name="partner_id" position="after">
+                <field name="partner_support" optional="show"/>
+            </field>
+        </field>
+    </record>
+
+    <record id="helpdesk_tickets_view_search_inherit_partner_support" model="ir.ui.view">
+        <field name="name">helpdesk.ticket.search.inherit.partner.support</field>
+        <field name="model">helpdesk.ticket</field>
+        <field name="inherit_id" ref="helpdesk.helpdesk_tickets_view_search_base"/>
+        <field name="arch" type="xml">
+            <field name="stage_id" position="after">
+                <filter string="Con soporte" name="with_support" domain="[('partner_support', '=', True)]"/>
+                <filter string="Sin soporte" name="without_support" domain="[('partner_support', '=', False)]"/>
+            </field>
+        </field>
+    </record>
+</odoo>

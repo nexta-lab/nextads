@@ -42,26 +42,21 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
 // ---------------------------------------------------------------- cabecera
 .o_body_pdf.o_css_margins .header.o_nds_header,
 .header.o_nds_header {
-    padding-top: 9mm !important;
-}
-.o_nds_header {
     font-family: $nds-sans;
     .nds-top {
-        @include nds-no-borders;
-        width: 100%;
-        border-bottom: 1px solid $nds-border !important;
-        td { padding: 0 0 3.5mm 0; vertical-align: middle; background: transparent !important; }
+        margin: 0 $nds-gutter;
+        padding-bottom: 3.5mm;
+        border-bottom: 1px solid $nds-border;
+        height: 9mm;
+        overflow: hidden;
     }
-    .nds-top-logo {
-        padding-left: $nds-gutter !important;
-        img { height: 9mm; width: auto; }
-    }
+    .nds-top-logo { height: 9mm; width: auto; display: block; }
     .nds-top-tag {
         @include nds-label;
+        float: right;
         font-size: 7.2pt;
         letter-spacing: 0.16em;
-        text-align: right;
-        padding-right: $nds-gutter !important;
+        line-height: 9mm;
     }
 }
 
@@ -70,8 +65,8 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
     font-family: $nds-sans;
     .nds-legal {
         margin: 0 $nds-gutter;
-        height: 17mm;
-        padding-top: 6mm;
+        height: 18mm;
+        padding-top: 6.5mm;
         font-size: 6.1pt;
         line-height: 1.45;
         color: $nds-muted;
@@ -81,17 +76,14 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
     .nds-band {
         margin: 0 (-$nds-page-margin);
         height: 15mm;
+        padding: 0 ($nds-page-margin + $nds-gutter);
         background-color: $nds-accent;
-        table { @include nds-no-borders; width: 100%; height: 15mm; }
-        td { vertical-align: middle; background: transparent !important; }
+        overflow: hidden;
     }
-    .nds-band-logo {
-        padding-left: $nds-page-margin + $nds-gutter;
-        img { height: 6.2mm; width: auto; }
-    }
+    .nds-band-logo { height: 6.2mm; width: auto; display: block; margin-top: 4.4mm; }
     .nds-band-page {
-        text-align: right;
-        padding-right: $nds-page-margin + $nds-gutter;
+        float: right;
+        line-height: 15mm;
         font-weight: 600;
         font-size: 7.2pt;
         letter-spacing: 0.14em;

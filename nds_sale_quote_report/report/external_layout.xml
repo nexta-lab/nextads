@@ -19,14 +19,10 @@
         </t>
 
         <div t-attf-class="header o_nds_header o_company_#{company.id}_layout">
-            <table class="nds-top">
-                <tr>
-                    <td class="nds-top-logo">
-                        <img src="/nds_sale_quote_report/static/img/nextads-logo-color.png" alt="Nexta DS"/>
-                    </td>
-                    <td class="nds-top-tag"><t t-out="nds_header_tag"/></td>
-                </tr>
-            </table>
+            <div class="nds-top">
+                <div class="nds-top-tag"><t t-out="nds_header_tag"/></div>
+                <img class="nds-top-logo" src="/nds_sale_quote_report/static/img/nextads-logo-color.png" alt="Nexta DS"/>
+            </div>
         </div>
 
         <div t-attf-class="article o_nds_quote o_company_#{company.id}_layout"
@@ -40,24 +36,18 @@
             <div class="nds-legal">
                 <div>
                     <span t-out="company.name"/>
-                    <t t-if="forced_vat or company.vat"> · NIF <span t-out="forced_vat or company.vat"/></t>
-                    <t t-if="company.street"> · <span t-out="company.street"/></t>
-                    <t t-if="company.zip or company.city"> · <span t-out="' '.join(x for x in [company.zip, company.city] if x)"/></t>
+                    <t t-if="forced_vat or company.vat">&#160;·&#160;NIF&#160;<span t-out="forced_vat or company.vat"/></t>
+                    <t t-if="company.street">&#160;·&#160;<span t-out="company.street"/></t>
+                    <t t-if="company.zip or company.city">&#160;·&#160;<span t-out="' '.join(x for x in [company.zip, company.city] if x)"/></t>
                 </div>
                 <div t-if="not is_html_empty(company.report_footer)" class="nds-legal-extra" t-field="company.report_footer"/>
             </div>
             <div class="nds-band">
-                <table>
-                    <tr>
-                        <td class="nds-band-logo">
-                            <img src="/nds_sale_quote_report/static/img/nextads-logo-blanco.png" alt="Nexta DS"/>
-                        </td>
-                        <td class="nds-band-page">
-                            <t t-if="report_type == 'pdf'">Página <span class="page"/> de <span class="topage"/></t>
-                            <t t-else="">nextads.es</t>
-                        </td>
-                    </tr>
-                </table>
+                <div class="nds-band-page">
+                    <t t-if="report_type == 'pdf'">Página&#160;<span class="page"/>&#160;de&#160;<span class="topage"/></t>
+                    <t t-else="">nextads.es</t>
+                </div>
+                <img class="nds-band-logo" src="/nds_sale_quote_report/static/img/nextads-logo-blanco.png" alt="Nexta DS"/>
             </div>
         </div>
     </template>

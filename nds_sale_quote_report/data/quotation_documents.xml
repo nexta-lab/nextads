@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!--
+        Páginas de marca para el PDF Quote Builder. Se crean una sola vez (noupdate):
+        para cambiar textos, se sube un PDF nuevo desde Ventas > Configuración > Encabezados/Pies.
+    -->
+    <record id="quotation_document_nds_header" model="quotation.document">
+        <field name="name">NextaDS · Portada, presentación y propuesta</field>
+        <field name="datas" type="base64" file="nds_sale_quote_report/static/quote_builder/nextads_encabezado.pdf"/>
+        <field name="mimetype">application/pdf</field>
+        <field name="document_type">header</field>
+        <field name="sequence">5</field>
+    </record>
+    <record id="quotation_document_nds_footer" model="quotation.document">
+        <field name="name">NextaDS · Próximos pasos y cierre</field>
+        <field name="datas" type="base64" file="nds_sale_quote_report/static/quote_builder/nextads_pie.pdf"/>
+        <field name="mimetype">application/pdf</field>
+        <field name="document_type">footer</field>
+        <field name="sequence">5</field>
+    </record>
+</odoo>

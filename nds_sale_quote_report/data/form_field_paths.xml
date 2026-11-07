@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Se ejecuta en cada actualización del módulo; solo rellena rutas vacías -->
+    <function model="sale.pdf.form.field" name="_nds_assign_paths"/>
+</odoo>

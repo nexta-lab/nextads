@@ -14,13 +14,14 @@ Cambia solo el informe de presupuesto / pedido de venta (no facturas ni albarane
 * Tabla de líneas con el título de cada servicio destacado y la descripción debajo.
 * Totales y condiciones con la tipografía de la marca (Inter y Source Serif 4, OFL).
 * Formato de papel propio para el informe de presupuesto y la factura proforma.
-* Encabezado (portada, presentación y propuesta) y pie de marca para el PDF Quote Builder.
+* Encabezado (portada, presentación y propuesta) y pie de marca para el PDF Quote Builder,
+  marcados por defecto en los presupuestos nuevos (no en tienda online ni renovaciones).
 """,
     'author': "Nexta Digital Solutions",
     'website': "https://www.nextads.es",
     'license': "LGPL-3",
     'category': 'Sales/Sales',
-    'version': '18.0.1.3.0',
+    'version': '18.0.1.4.0',
     'depends': [
         'sale_management',
         'sale_pdf_quote_builder',

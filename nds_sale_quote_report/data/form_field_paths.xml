@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Se ejecuta en cada actualización del módulo; solo rellena rutas vacías -->
+    <!-- Se ejecutan en cada actualización del módulo -->
     <function model="sale.pdf.form.field" name="_nds_assign_paths"/>
+    <function model="ir.actions.report" name="_nds_rename_quote_reports"/>
 </odoo>

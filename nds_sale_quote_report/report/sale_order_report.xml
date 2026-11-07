@@ -26,7 +26,6 @@
         <xpath expr="//div[@id='informations']" position="replace">
             <div class="nds-title">
                 <div class="nds-num" t-if="doc.quotation_document_ids">03</div>
-                <div class="nds-eyebrow" t-else=""><t t-out="nds_doc_label"/> <t t-out="doc.name"/></div>
                 <h2 class="nds-h2">Servicios, importes y condiciones</h2>
             </div>
             <table class="nds-meta" id="informations">

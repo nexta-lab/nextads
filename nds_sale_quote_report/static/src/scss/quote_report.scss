@@ -32,18 +32,25 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
     color: $nds-muted;
 }
 
+// tablas de maquetación sin bordes (Odoo pone bordes a las tablas de los informes)
+@mixin nds-no-borders {
+    border: 0 !important;
+    > tbody > tr, > tr { border: 0 !important; }
+    > tbody > tr > td, > tr > td, > tbody > tr > th { border: 0 !important; box-shadow: none !important; }
+}
+
 // ---------------------------------------------------------------- cabecera
 .o_body_pdf.o_css_margins .header.o_nds_header,
 .header.o_nds_header {
-    padding-top: 0;
+    padding-top: 9mm !important;
 }
 .o_nds_header {
     font-family: $nds-sans;
     .nds-top {
+        @include nds-no-borders;
         width: 100%;
-        margin-top: 9mm;
-        border-bottom: 1px solid $nds-border;
-        td { padding: 0 0 3.5mm 0; vertical-align: middle; }
+        border-bottom: 1px solid $nds-border !important;
+        td { padding: 0 0 3.5mm 0; vertical-align: middle; background: transparent !important; }
     }
     .nds-top-logo {
         padding-left: $nds-gutter !important;
@@ -63,8 +70,8 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
     font-family: $nds-sans;
     .nds-legal {
         margin: 0 $nds-gutter;
-        height: 12mm;
-        padding-top: 2mm;
+        height: 17mm;
+        padding-top: 6mm;
         font-size: 6.1pt;
         line-height: 1.45;
         color: $nds-muted;
@@ -75,8 +82,8 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
         margin: 0 (-$nds-page-margin);
         height: 15mm;
         background-color: $nds-accent;
-        table { width: 100%; height: 15mm; }
-        td { vertical-align: middle; }
+        table { @include nds-no-borders; width: 100%; height: 15mm; }
+        td { vertical-align: middle; background: transparent !important; }
     }
     .nds-band-logo {
         padding-left: $nds-page-margin + $nds-gutter;
@@ -129,11 +136,13 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
 
     // datos del documento
     table.nds-meta {
+        @include nds-no-borders;
+        border-collapse: separate;
         width: 100%;
         background-color: $nds-surface;
         border-radius: 3mm;
         margin-bottom: 7mm;
-        td { padding: 4mm 4mm; vertical-align: top; }
+        td { padding: 4mm 4mm; vertical-align: top; background: transparent !important; }
         td.nds-meta-client { width: 34%; }
         .nds-label { @include nds-label; display: block; margin-bottom: 1.8mm; }
         .nds-v { font-weight: 600; font-size: 9.2pt; line-height: 1.3; color: $nds-primary; }
@@ -241,7 +250,7 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
         text-align: left;
         p { margin: 0 0 1.1mm 0; }
         p strong, p b {
-            display: inline-block;
+            display: block;
             margin-top: 2.6mm;
             font-weight: 700;
             font-size: 7pt;

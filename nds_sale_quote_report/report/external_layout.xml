@@ -44,8 +44,7 @@
             </div>
             <div class="nds-band">
                 <div class="nds-band-page">
-                    <t t-if="report_type == 'pdf'">Página&#160;<span class="page"/>&#160;de&#160;<span class="topage"/></t>
-                    <t t-else="">nextads.es</t>
+                    nextads.es
                 </div>
                 <img class="nds-band-logo" src="/nds_sale_quote_report/static/img/nextads-logo-blanco.png" alt="Nexta DS"/>
             </div>

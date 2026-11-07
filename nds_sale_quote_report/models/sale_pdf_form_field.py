@@ -6,7 +6,7 @@ from odoo import api, models
 NDS_QUOTATION_FIELD_PATHS = {
     'partner_id__name': 'partner_id.name',
     'name': 'name',
-    'order_date': 'date_order',
+    'order_date': 'nds_quote_date',
     'user_id__name': 'user_id.name',
     'user_id__email': 'user_id.email',
     'amount_untaxed': 'amount_untaxed',
@@ -20,6 +20,13 @@ class SalePdfFormField(models.Model):
     @api.model
     def _nds_assign_paths(self):
         """Asigna la ruta a los campos automáticos que aún no la tengan (no pisa cambios manuales)."""
+        self.env.flush_all()
+        # La fecha se mostraba con hora: se corrige la ruta antigua si sigue puesta.
+        self.search([
+            ('document_type', '=', 'quotation_document'),
+            ('name', '=', 'order_date'),
+            ('path', '=', 'date_order'),
+        ]).write({'path': 'nds_quote_date'})
         fields_without_path = self.search([
             ('document_type', '=', 'quotation_document'),
             ('name', 'in', list(NDS_QUOTATION_FIELD_PATHS)),

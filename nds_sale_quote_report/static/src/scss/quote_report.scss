@@ -1,0 +1,264 @@
+// Presupuesto NextaDS: estilos limitados a las clases propias del informe
+// (.o_nds_header, .o_nds_quote, .o_nds_footer) para no tocar otros documentos.
+// Escrito para wkhtmltopdf (QtWebKit): sin flex, grid ni variables CSS.
+
+@font-face { font-family: 'NDS Inter'; font-weight: 400; src: url('/nds_sale_quote_report/static/fonts/Inter-Regular.ttf') format('truetype'); }
+@font-face { font-family: 'NDS Inter'; font-weight: 500; src: url('/nds_sale_quote_report/static/fonts/Inter-Medium.ttf') format('truetype'); }
+@font-face { font-family: 'NDS Inter'; font-weight: 600; src: url('/nds_sale_quote_report/static/fonts/Inter-SemiBold.ttf') format('truetype'); }
+@font-face { font-family: 'NDS Inter'; font-weight: 700; src: url('/nds_sale_quote_report/static/fonts/Inter-Bold.ttf') format('truetype'); }
+@font-face { font-family: 'NDS Serif'; font-weight: 400; src: url('/nds_sale_quote_report/static/fonts/SourceSerif4-Regular.ttf') format('truetype'); }
+@font-face { font-family: 'NDS Serif'; font-weight: 600; src: url('/nds_sale_quote_report/static/fonts/SourceSerif4-SemiBold.ttf') format('truetype'); }
+
+$nds-primary: #004F71;
+$nds-primary-dark: #00374F;
+$nds-accent: #AF5894;
+$nds-accent-soft: #F2E6EF;
+$nds-surface: #F4F8FA;
+$nds-border: #DCE6EB;
+$nds-text: #0C2029;
+$nds-body: #3C5866;
+$nds-muted: #5C7480;
+$nds-sans: 'NDS Inter', 'Lato', Arial, sans-serif;
+$nds-serif: 'NDS Serif', Georgia, serif;
+$nds-page-margin: 11mm;   // padding que Odoo pone al body con css_margins
+$nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del documento
+
+@mixin nds-label {
+    font-family: $nds-sans;
+    font-weight: 600;
+    font-size: 6.8pt;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: $nds-muted;
+}
+
+// ---------------------------------------------------------------- cabecera
+.o_body_pdf.o_css_margins .header.o_nds_header,
+.header.o_nds_header {
+    padding-top: 0;
+}
+.o_nds_header {
+    font-family: $nds-sans;
+    .nds-top {
+        width: 100%;
+        margin-top: 9mm;
+        border-bottom: 1px solid $nds-border;
+        td { padding: 0 0 3.5mm 0; vertical-align: middle; }
+    }
+    .nds-top-logo {
+        padding-left: $nds-gutter !important;
+        img { height: 9mm; width: auto; }
+    }
+    .nds-top-tag {
+        @include nds-label;
+        font-size: 7.2pt;
+        letter-spacing: 0.16em;
+        text-align: right;
+        padding-right: $nds-gutter !important;
+    }
+}
+
+// ---------------------------------------------------------------- pie
+.o_nds_footer {
+    font-family: $nds-sans;
+    .nds-legal {
+        margin: 0 $nds-gutter;
+        height: 12mm;
+        padding-top: 2mm;
+        font-size: 6.1pt;
+        line-height: 1.45;
+        color: $nds-muted;
+        text-align: center;
+        p { margin: 0; }
+    }
+    .nds-band {
+        margin: 0 (-$nds-page-margin);
+        height: 15mm;
+        background-color: $nds-accent;
+        table { width: 100%; height: 15mm; }
+        td { vertical-align: middle; }
+    }
+    .nds-band-logo {
+        padding-left: $nds-page-margin + $nds-gutter;
+        img { height: 6.2mm; width: auto; }
+    }
+    .nds-band-page {
+        text-align: right;
+        padding-right: $nds-page-margin + $nds-gutter;
+        font-weight: 600;
+        font-size: 7.2pt;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: #FFFFFF;
+    }
+}
+
+// ---------------------------------------------------------------- cuerpo
+.article.o_nds_quote {
+    padding: 0 $nds-gutter;
+    font-family: $nds-sans;
+    font-size: 8.8pt;
+    color: $nds-body;
+
+    .page > h2:first-child { display: none; }
+
+    .nds-title { margin: 2mm 0 5mm; }
+    .nds-num, .nds-eyebrow {
+        font-weight: 600;
+        font-size: 8.4pt;
+        letter-spacing: 0.06em;
+        color: $nds-accent;
+        margin-bottom: 1.5mm;
+    }
+    .nds-eyebrow { font-size: 7pt; letter-spacing: 0.16em; text-transform: uppercase; }
+    .nds-h2 {
+        font-family: $nds-serif;
+        font-weight: 600;
+        font-size: 22pt;
+        line-height: 1.12;
+        color: $nds-primary;
+        margin: 0;
+    }
+    .nds-h3 {
+        font-family: $nds-serif;
+        font-weight: 600;
+        font-size: 13pt;
+        color: $nds-primary;
+        margin: 9mm 0 3mm;
+    }
+
+    // datos del documento
+    table.nds-meta {
+        width: 100%;
+        background-color: $nds-surface;
+        border-radius: 3mm;
+        margin-bottom: 7mm;
+        td { padding: 4mm 4mm; vertical-align: top; }
+        td.nds-meta-client { width: 34%; }
+        .nds-label { @include nds-label; display: block; margin-bottom: 1.8mm; }
+        .nds-v { font-weight: 600; font-size: 9.2pt; line-height: 1.3; color: $nds-primary; }
+        .nds-v-small { font-size: 7.6pt; line-height: 1.4; color: $nds-muted; margin-top: 0.8mm; }
+        .nds-v-small address, .nds-v-small div, .nds-v-small span { margin: 0; font-size: 7.6pt; }
+    }
+
+    // tabla de líneas
+    table.o_main_table.nds-lines {
+        width: 100%;
+        border-collapse: collapse;
+        color: $nds-body;
+        thead tr th {
+            @include nds-label;
+            background: transparent !important;
+            border: 0 !important;
+            border-bottom: 1.5px solid $nds-primary !important;
+            padding: 0 0 2.5mm 2mm !important;
+        }
+        thead tr th:first-child { padding-left: 0 !important; }
+        tbody td {
+            border: 0 !important;
+            border-bottom: 1px solid $nds-border !important;
+            padding: 3.6mm 0 3.6mm 2mm !important;
+            vertical-align: top;
+            font-size: 8.6pt;
+            background: transparent !important;
+        }
+        td.nds-desc { padding-left: 0 !important; padding-right: 5mm !important; }
+        .nds-line-title {
+            font-family: $nds-serif;
+            font-weight: 600;
+            font-size: 10.4pt;
+            line-height: 1.3;
+            color: $nds-primary;
+            margin-bottom: 1.2mm;
+        }
+        .nds-line-desc { font-size: 8.2pt; line-height: 1.5; color: $nds-body; }
+        td[name="td_quantity"] span[t-field], td[name="td_quantity"] span { white-space: nowrap; }
+        td.o_price_total { font-weight: 600; color: $nds-primary; }
+
+        tr.o_line_section td {
+            font-weight: 700 !important;
+            font-size: 7.4pt !important;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: $nds-accent !important;
+            border-bottom: 1px solid $nds-accent !important;
+            padding: 5mm 0 2.2mm 0 !important;
+        }
+        tr.o_line_note td {
+            font-style: normal;
+            background-color: $nds-accent-soft !important;
+            color: $nds-primary;
+            font-size: 8.2pt;
+            padding: 3mm 4mm !important;
+            border-bottom: 3mm solid #FFFFFF !important;
+        }
+        tr.is-subtotal td {
+            font-size: 8.4pt;
+            color: $nds-primary;
+            border-bottom: 0 !important;
+            strong { font-weight: 600; @include nds-label; margin-right: 4mm; }
+        }
+    }
+
+    // totales
+    #total {
+        margin-top: 5mm !important;
+        table.o_total_table {
+            width: 100%;
+            border-collapse: collapse;
+            td {
+                border: 0 !important;
+                background: transparent !important;
+                padding: 1.8mm 0 !important;
+                font-size: 8.8pt;
+                color: $nds-body;
+            }
+            tr.o_total td {
+                border-top: 2px solid $nds-accent !important;
+                padding-top: 3mm !important;
+                font-family: $nds-serif;
+                font-weight: 600;
+                font-size: 15pt;
+                color: $nds-primary;
+                strong { font-weight: 600; }
+            }
+            tr.o_total td:first-child {
+                font-family: $nds-sans;
+                font-size: 7.4pt;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                vertical-align: middle;
+            }
+        }
+    }
+
+    // condiciones
+    .nds-terms {
+        display: block;
+        font-size: 7.8pt;
+        line-height: 1.45;
+        color: $nds-body;
+        text-align: left;
+        p { margin: 0 0 1.1mm 0; }
+        p strong, p b {
+            display: inline-block;
+            margin-top: 2.6mm;
+            font-weight: 700;
+            font-size: 7pt;
+            letter-spacing: 0.14em;
+            color: $nds-primary;
+        }
+    }
+
+    // firma y opciones (sale_management)
+    div[name="signature"] strong { @include nds-label; }
+    h4[name="h_optional_products"] {
+        font-family: $nds-serif;
+        font-weight: 600;
+        font-size: 12pt;
+        color: $nds-primary;
+        margin-top: 7mm;
+    }
+    table[name="table_optional_products"] td { border-color: $nds-border !important; font-size: 8.4pt; }
+    #payment_mode_note, #fiscal_position_remark { font-size: 7.8pt; }
+}

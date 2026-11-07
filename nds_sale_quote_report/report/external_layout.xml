@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Diseño de página de NextaDS. Solo lo usa el informe de presupuesto / pedido
+        (ver sale_order_report.xml); el resto de documentos sigue con el diseño de la compañía.
+    -->
+    <template id="external_layout_nds" name="NextaDS: diseño de página del presupuesto">
+        <t t-if="not o" t-set="o" t-value="doc"/>
+        <t t-if="not company">
+            <t t-if="company_id">
+                <t t-set="company" t-value="company_id"/>
+            </t>
+            <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                <t t-set="company" t-value="o.company_id.sudo()"/>
+            </t>
+            <t t-else="else">
+                <t t-set="company" t-value="res_company"/>
+            </t>
+        </t>
+
+        <div t-attf-class="header o_nds_header o_company_#{company.id}_layout">
+            <table class="nds-top">
+                <tr>
+                    <td class="nds-top-logo">
+                        <img src="/nds_sale_quote_report/static/img/nextads-logo-color.png" alt="Nexta DS"/>
+                    </td>
+                    <td class="nds-top-tag"><t t-out="nds_header_tag"/></td>
+                </tr>
+            </table>
+        </div>
+
+        <div t-attf-class="article o_nds_quote o_company_#{company.id}_layout"
+             t-att-data-oe-model="o and o._name"
+             t-att-data-oe-id="o and o.id"
+             t-att-data-oe-lang="o and o.env.context.get('lang')">
+            <t t-out="0"/>
+        </div>
+
+        <div t-attf-class="footer o_nds_footer o_company_#{company.id}_layout">
+            <div class="nds-legal">
+                <div>
+                    <span t-out="company.name"/>
+                    <t t-if="forced_vat or company.vat"> · NIF <span t-out="forced_vat or company.vat"/></t>
+                    <t t-if="company.street"> · <span t-out="company.street"/></t>
+                    <t t-if="company.zip or company.city"> · <span t-out="' '.join(x for x in [company.zip, company.city] if x)"/></t>
+                </div>
+                <div t-if="not is_html_empty(company.report_footer)" class="nds-legal-extra" t-field="company.report_footer"/>
+            </div>
+            <div class="nds-band">
+                <table>
+                    <tr>
+                        <td class="nds-band-logo">
+                            <img src="/nds_sale_quote_report/static/img/nextads-logo-blanco.png" alt="Nexta DS"/>
+                        </td>
+                        <td class="nds-band-page">
+                            <t t-if="report_type == 'pdf'">Página <span class="page"/> de <span class="topage"/></t>
+                            <t t-else="">nextads.es</t>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </template>
+</odoo>

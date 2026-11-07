@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Presupuesto / pedido de venta con el diseño de NextaDS.
+        Prioridad alta para aplicarse después del resto de herencias (sale_management,
+        sale_stock, sale_subscription, account_payment_sale y la vista manual
+        "NextaDS: ocultar nombre de producto en PDF presupuesto", que este diseño ya incorpora).
+    -->
+    <template id="report_saleorder_document_nds" inherit_id="sale.report_saleorder_document"
+              name="NextaDS: presupuesto con diseño de marca" priority="200">
+
+        <!-- 1. Diseño de página propio, solo para este informe -->
+        <xpath expr="//t[@t-call='web.external_layout']" position="attributes">
+            <attribute name="t-call">nds_sale_quote_report.external_layout_nds</attribute>
+        </xpath>
+
+        <!-- 2. Etiqueta de la cabecera y título -->
+        <xpath expr="//div[hasclass('page')]" position="before">
+            <t t-set="nds_is_proforma" t-value="env.context.get('proforma', False) or is_pro_forma"/>
+            <t t-set="nds_doc_label"
+               t-value="'Factura proforma' if nds_is_proforma else ('Presupuesto' if doc.state in ['draft', 'sent'] else 'Pedido')"/>
+            <t t-set="nds_header_tag" t-value="'%s %s' % (nds_doc_label, doc.name)"/>
+        </xpath>
+
+        <!-- 3. Bloque de datos en lugar de la fila estándar de información -->
+        <xpath expr="//div[@id='informations']" position="replace">
+            <div class="nds-title">
+                <div class="nds-num" t-if="doc.quotation_document_ids">03</div>
+                <div class="nds-eyebrow" t-else=""><t t-out="nds_doc_label"/> <t t-out="doc.name"/></div>
+                <h2 class="nds-h2">Servicios, importes y condiciones</h2>
+            </div>
+            <table class="nds-meta" id="informations">
+                <tr>
+                    <td class="nds-meta-client">
+                        <span class="nds-label">Cliente</span>
+                        <div class="nds-v" t-out="doc.partner_id.display_name"/>
+                        <div class="nds-v-small"
+                             t-field="doc.partner_id"
+                             t-options='{"widget": "contact", "fields": ["address"], "no_marker": True}'/>
+                        <div class="nds-v-small" t-if="doc.partner_id.vat">NIF <span t-field="doc.partner_id.vat"/></div>
+                    </td>
+                    <td>
+                        <span class="nds-label"><t t-out="nds_doc_label"/></span>
+                        <div class="nds-v"><span t-field="doc.name"/></div>
+                        <div class="nds-v-small" t-if="doc.date_order"><span t-field="doc.date_order" t-options='{"widget": "date"}'/></div>
+                    </td>
+                    <td t-if="doc.validity_date and doc.state in ['draft', 'sent']">
+                        <span class="nds-label">Válido hasta</span>
+                        <div class="nds-v"><span t-field="doc.validity_date"/></div>
+                    </td>
+                    <td t-if="doc.client_order_ref">
+                        <span class="nds-label">Vuestra referencia</span>
+                        <div class="nds-v"><span t-field="doc.client_order_ref"/></div>
+                    </td>
+                    <t t-if="'is_subscription' in doc and doc.is_subscription">
+                        <td>
+                            <span class="nds-label">Plan</span>
+                            <div class="nds-v"><span t-out="doc.plan_id.name"/></div>
+                            <div class="nds-v-small" t-if="doc.start_date">Desde <span t-field="doc.start_date"/></div>
+                        </td>
+                    </t>
+                    <td t-if="'incoterm' in doc and doc.incoterm">
+                        <span class="nds-label">Incoterm</span>
+                        <div class="nds-v"><span t-field="doc.incoterm.code"/></div>
+                    </td>
+                    <td t-if="doc.user_id">
+                        <span class="nds-label">Comercial</span>
+                        <div class="nds-v"><span t-field="doc.user_id"/></div>
+                    </td>
+                </tr>
+            </table>
+        </xpath>
+
+        <!-- 4. Clase propia en la tabla de líneas -->
+        <xpath expr="//table[hasclass('o_main_table')]" position="attributes">
+            <attribute name="class" add="nds-lines" separator=" "/>
+        </xpath>
+
+        <!-- 5. Descripción: título del servicio destacado y detalle debajo -->
+        <xpath expr="//td[@name='td_name']" position="replace">
+            <td name="td_name" class="nds-desc">
+                <t t-set="nx_pname" t-value="line.product_id.display_name or ''"/>
+                <t t-set="nx_text" t-value="line.name or ''"/>
+                <t t-set="nx_rest" t-value="nx_text[len(nx_pname):].strip() if nx_pname and nx_text.startswith(nx_pname) else ''"/>
+                <t t-set="nx_lines" t-value="(nx_rest or nx_text).strip().split('\n')"/>
+                <div class="nds-line-title" t-out="nx_lines[0]"/>
+                <div class="nds-line-desc" t-if="len(nx_lines) &gt; 1">
+                    <t t-foreach="nx_lines[1:]" t-as="nx_l">
+                        <t t-out="nx_l"/><br t-if="not nx_l_last"/>
+                    </t>
+                </div>
+            </td>
+        </xpath>
+
+        <!-- 6. Condiciones con su título y sin justificar -->
+        <xpath expr="//span[@name='order_note']" position="attributes">
+            <attribute name="t-attf-style"></attribute>
+            <attribute name="class">nds-terms</attribute>
+        </xpath>
+        <xpath expr="//span[@name='order_note']" position="before">
+            <h3 class="nds-h3" t-if="not is_html_empty(doc.note)">Condiciones</h3>
+        </xpath>
+    </template>
+</odoo>

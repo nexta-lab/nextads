@@ -2,9 +2,10 @@
 from odoo import api, models
 
 # Campos de las páginas de marca que se rellenan solos con datos del presupuesto.
-# Los que empiezan por "nds_" se dejan sin ruta: son texto libre en la pestaña Quote Builder.
+# El asunto de la portada sale de la pestaña «Propuesta» del presupuesto.
 NDS_QUOTATION_FIELD_PATHS = {
     'partner_id__name': 'partner_id.name',
+    '1_Asunto_de_la_propuesta': 'nds_asunto',
     'name': 'name',
     'order_date': 'nds_quote_date',
     'user_id__name': 'user_id.name',

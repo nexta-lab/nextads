@@ -5,7 +5,7 @@
         para cambiar textos, se sube un PDF nuevo desde Ventas > Configuración > Encabezados/Pies.
     -->
     <record id="quotation_document_nds_header" model="quotation.document">
-        <field name="name">NextaDS · Portada, presentación y propuesta</field>
+        <field name="name">NextaDS · Portada y presentación</field>
         <field name="datas" type="base64" file="nds_sale_quote_report/static/quote_builder/nextads_encabezado.pdf"/>
         <field name="mimetype">application/pdf</field>
         <field name="document_type">header</field>

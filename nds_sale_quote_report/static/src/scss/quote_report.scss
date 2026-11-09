@@ -234,19 +234,105 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
         }
     }
 
+    // página «Vuestra propuesta»
+    .nds-proposal {
+        page-break-after: always;
+        .nds-title { margin-bottom: 7mm; }
+    }
+    table.nds-prop-grid {
+        @include nds-no-borders;
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0;
+        > tbody > tr > td, > tr > td { vertical-align: top; padding: 0; }
+        td.nds-prop-main { width: 112mm; }
+        td.nds-prop-gap { width: 7mm; }
+        td.nds-prop-side {
+            width: 55mm;
+            background-color: $nds-surface !important;
+            border-top: 3px solid $nds-accent !important;
+            border-radius: 3mm;
+            padding: 6mm 5.5mm 6mm 5.5mm !important;
+        }
+    }
+    .nds-prop-block {
+        margin-bottom: 8mm;
+        page-break-inside: avoid;
+        p {
+            margin: 0 0 2.4mm 0;
+            font-size: 8.8pt;
+            line-height: 1.6;
+            color: $nds-body;
+            text-align: left;
+        }
+    }
+    .nds-prop-label {
+        font-weight: 700;
+        font-size: 6.9pt;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: $nds-primary;
+        margin-bottom: 3.2mm;
+        white-space: nowrap;
+    }
+    .nds-prop-bar {
+        display: inline-block;
+        width: 5mm;
+        height: 1mm;
+        background-color: $nds-accent;
+        vertical-align: middle;
+        margin: 0 2.5mm 0.4mm 0;
+    }
+    table.nds-prop-list {
+        @include nds-no-borders;
+        width: 100%;
+        border-collapse: collapse;
+        tr > td {
+            border-top: 1px solid $nds-border !important;
+            padding: 2.3mm 0 !important;
+            font-size: 8.8pt;
+            line-height: 1.5;
+            color: $nds-body;
+            vertical-align: top;
+            background: transparent !important;
+        }
+        tr:last-child > td { border-bottom: 1px solid $nds-border !important; }
+        td.nds-prop-arrow {
+            width: 6mm;
+            color: $nds-accent;
+            font-weight: 700;
+        }
+    }
+    td.nds-prop-side {
+        .nds-label { @include nds-label; display: block; margin-bottom: 2mm; }
+        .nds-prop-amount {
+            font-family: $nds-serif;
+            font-weight: 600;
+            font-size: 19pt;
+            line-height: 1.1;
+            color: $nds-primary;
+            white-space: nowrap;
+        }
+        .nds-prop-small { font-size: 7.4pt; color: $nds-muted; margin-top: 1.4mm; }
+        .nds-prop-note { font-size: 7.8pt; line-height: 1.5; color: $nds-body; margin-top: 2.6mm; }
+        .nds-prop-value { font-weight: 600; font-size: 8.8pt; line-height: 1.45; color: $nds-primary; }
+        .nds-prop-sep { height: 0; border-top: 1px solid $nds-border; margin: 4.5mm 0; }
+        .nds-prop-foot { font-size: 7.4pt; line-height: 1.55; color: $nds-muted; }
+    }
+
     // condiciones
     .nds-terms {
         display: block;
-        font-size: 7.8pt;
-        line-height: 1.45;
+        font-size: 8.6pt;
+        line-height: 1.5;
         color: $nds-body;
         text-align: left;
-        p { margin: 0 0 1.1mm 0; }
+        p { margin: 0 0 1.3mm 0; }
         p strong, p b {
             display: block;
-            margin-top: 2.6mm;
+            margin-top: 3mm;
             font-weight: 700;
-            font-size: 7pt;
+            font-size: 7.4pt;
             letter-spacing: 0.14em;
             color: $nds-primary;
         }

@@ -15,6 +15,29 @@ class SaleOrder(models.Model):
         help="Fecha del pedido sin la hora, para la portada del PDF de marca.",
     )
 
+    # Textos de la portada y de la página «Vuestra propuesta» (pestaña Propuesta del presupuesto)
+    nds_asunto = fields.Char(
+        string="Asunto de la propuesta",
+        help="Aparece en la portada, debajo del nombre del cliente.",
+    )
+    nds_punto_partida = fields.Text(
+        string="Punto de partida",
+        help="Qué necesita el cliente. Escribid seguido: cada salto de línea empieza un párrafo nuevo.",
+    )
+    nds_que_haremos = fields.Text(
+        string="Qué vamos a hacer",
+        help="Cómo lo vamos a resolver. Cada salto de línea empieza un párrafo nuevo.",
+    )
+    nds_incluye = fields.Text(
+        string="Qué incluye",
+        help="Un elemento por línea. No hace falta poner guiones: la lista se dibuja sola.",
+    )
+    nds_nota_importe = fields.Char(
+        string="Nota bajo el importe",
+        help="Por ejemplo, horas y precio por hora, o lo que no está incluido.",
+    )
+    nds_plazo = fields.Char(string="Plazo estimado")
+
     @api.depends('date_order')
     def _compute_nds_quote_date(self):
         for order in self:
@@ -22,6 +45,31 @@ class SaleOrder(models.Model):
                 fields.Datetime.context_timestamp(order, order.date_order).date()
                 if order.date_order else False
             )
+
+    # ------------------------------------------------------------ página «Vuestra propuesta»
+    def _nds_paragraphs(self, field_name):
+        """Párrafos del texto: cada línea no vacía es un párrafo."""
+        self.ensure_one()
+        text = self[field_name] or ''
+        return [' '.join(line.split()) for line in text.splitlines() if line.strip()]
+
+    def _nds_items(self):
+        """Elementos de «Qué incluye», sin los guiones o viñetas que se hayan escrito a mano."""
+        self.ensure_one()
+        items = []
+        for line in (self.nds_incluye or '').splitlines():
+            line = ' '.join(line.split()).lstrip('—–-•*·').strip()
+            if line:
+                items.append(line)
+        return items
+
+    def _nds_has_proposal(self):
+        """La página se imprime si el presupuesto lleva el encabezado de marca y algún texto."""
+        self.ensure_one()
+        has_header = any(doc.document_type == 'header' for doc in self.quotation_document_ids)
+        return has_header and any(
+            self[name] for name in ('nds_punto_partida', 'nds_que_haremos', 'nds_incluye')
+        )
 
     @api.model
     def _nds_default_quote_documents(self):

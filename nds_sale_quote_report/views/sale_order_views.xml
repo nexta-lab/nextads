@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Pestaña «Propuesta»: textos de la portada y de la página «Vuestra propuesta» -->
+    <record id="view_order_form_nds_proposal" model="ir.ui.view">
+        <field name="name">sale.order.form.nds.proposal</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='order_lines']" position="after">
+                <page string="Propuesta" name="nds_proposal">
+                    <div class="text-muted mb-3">
+                        Textos de la portada y de la página «Vuestra propuesta» del presupuesto completo.
+                        Escribid seguido, sin cortar las líneas a mano: el diseño las ajusta solo.
+                        Cada salto de línea empieza un párrafo nuevo y, en «Qué incluye», un elemento nuevo de la lista.
+                        Si los tres textos están vacíos, esa página no se imprime.
+                    </div>
+                    <group>
+                        <field name="nds_asunto" placeholder="Ej.: Web corporativa y posicionamiento orgánico"/>
+                    </group>
+                    <group string="Vuestra propuesta">
+                        <field name="nds_punto_partida" placeholder="Qué necesita el cliente y de dónde parte."/>
+                        <field name="nds_que_haremos" placeholder="Cómo lo vamos a resolver."/>
+                        <field name="nds_incluye" placeholder="Un elemento por línea."/>
+                    </group>
+                    <group string="Recuadro del importe">
+                        <field name="nds_nota_importe" placeholder="Ej.: 12 h a 60 €/h. Licencia de Odoo por vuestra cuenta."/>
+                        <field name="nds_plazo" placeholder="Ej.: 3 semanas desde que nos entregáis el contenido."/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

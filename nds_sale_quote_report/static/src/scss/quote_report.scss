@@ -102,10 +102,12 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
 
     .page > h2:first-child { display: none; }
 
-    .nds-title { margin: 2mm 0 5mm; }
+    // El informe se imprime a ~0,846 del tamaño CSS (dpi 90 de wkhtmltopdf): los tamaños de los
+    // títulos y de la página de propuesta están compensados para coincidir con las páginas de marca.
+    .nds-title { margin: 1mm 0 6mm; }
     .nds-num, .nds-eyebrow {
         font-weight: 600;
-        font-size: 8.4pt;
+        font-size: 10.6pt;
         letter-spacing: 0.06em;
         color: $nds-accent;
         margin-bottom: 1.5mm;
@@ -114,17 +116,18 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
     .nds-h2 {
         font-family: $nds-serif;
         font-weight: 600;
-        font-size: 22pt;
+        font-size: 29.5pt;
         line-height: 1.12;
+        letter-spacing: -0.005em;
         color: $nds-primary;
         margin: 0;
     }
     .nds-h3 {
         font-family: $nds-serif;
         font-weight: 600;
-        font-size: 13pt;
+        font-size: 14.8pt;
         color: $nds-primary;
-        margin: 9mm 0 3mm;
+        margin: 9mm 0 3.5mm;
     }
 
     // datos del documento
@@ -237,7 +240,7 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
     // página «Vuestra propuesta»
     .nds-proposal {
         page-break-after: always;
-        .nds-title { margin-bottom: 7mm; }
+        .nds-title { margin-bottom: 8mm; }
     }
     table.nds-prop-grid {
         @include nds-no-borders;
@@ -259,20 +262,20 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
         margin-bottom: 8mm;
         page-break-inside: avoid;
         p {
-            margin: 0 0 2.4mm 0;
-            font-size: 8.8pt;
-            line-height: 1.6;
+            margin: 0 0 2.6mm 0;
+            font-size: 11.2pt;
+            line-height: 1.55;
             color: $nds-body;
             text-align: left;
         }
     }
     .nds-prop-label {
         font-weight: 700;
-        font-size: 6.9pt;
+        font-size: 9.2pt;
         letter-spacing: 0.16em;
         text-transform: uppercase;
         color: $nds-primary;
-        margin-bottom: 3.2mm;
+        margin-bottom: 3.6mm;
         white-space: nowrap;
     }
     .nds-prop-bar {
@@ -287,52 +290,52 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
         @include nds-no-borders;
         width: 100%;
         border-collapse: collapse;
-        tr > td {
+        > tbody > tr > td, > tr > td {
             border-top: 1px solid $nds-border !important;
-            padding: 2.3mm 0 !important;
-            font-size: 8.8pt;
+            padding: 2.6mm 0 !important;
+            font-size: 11.2pt;
             line-height: 1.5;
             color: $nds-body;
             vertical-align: top;
             background: transparent !important;
         }
-        tr:last-child > td { border-bottom: 1px solid $nds-border !important; }
+        > tbody > tr:last-child > td, > tr:last-child > td { border-bottom: 1px solid $nds-border !important; }
         td.nds-prop-arrow {
-            width: 6mm;
+            width: 7mm;
             color: $nds-accent;
             font-weight: 700;
         }
     }
     td.nds-prop-side {
-        .nds-label { @include nds-label; display: block; margin-bottom: 2mm; }
+        .nds-label { @include nds-label; font-size: 8.7pt; display: block; margin-bottom: 2.4mm; }
         .nds-prop-amount {
             font-family: $nds-serif;
             font-weight: 600;
-            font-size: 19pt;
+            font-size: 24pt;
             line-height: 1.1;
             color: $nds-primary;
             white-space: nowrap;
         }
-        .nds-prop-small { font-size: 7.4pt; color: $nds-muted; margin-top: 1.4mm; }
-        .nds-prop-note { font-size: 7.8pt; line-height: 1.5; color: $nds-body; margin-top: 2.6mm; }
-        .nds-prop-value { font-weight: 600; font-size: 8.8pt; line-height: 1.45; color: $nds-primary; }
-        .nds-prop-sep { height: 0; border-top: 1px solid $nds-border; margin: 4.5mm 0; }
-        .nds-prop-foot { font-size: 7.4pt; line-height: 1.55; color: $nds-muted; }
+        .nds-prop-small { font-size: 9pt; color: $nds-muted; margin-top: 1.6mm; }
+        .nds-prop-note { font-size: 9.4pt; line-height: 1.5; color: $nds-body; margin-top: 3mm; }
+        .nds-prop-value { font-weight: 600; font-size: 10.6pt; line-height: 1.45; color: $nds-primary; }
+        .nds-prop-sep { height: 0; border-top: 1px solid $nds-border; margin: 5mm 0; }
+        .nds-prop-foot { font-size: 9pt; line-height: 1.55; color: $nds-muted; }
     }
 
     // condiciones
     .nds-terms {
         display: block;
-        font-size: 8.6pt;
+        font-size: 9.4pt;
         line-height: 1.5;
         color: $nds-body;
         text-align: left;
-        p { margin: 0 0 1.3mm 0; }
+        p { margin: 0 0 1.4mm 0; }
         p strong, p b {
             display: block;
-            margin-top: 3mm;
+            margin-top: 3.2mm;
             font-weight: 700;
-            font-size: 7.4pt;
+            font-size: 8pt;
             letter-spacing: 0.14em;
             color: $nds-primary;
         }

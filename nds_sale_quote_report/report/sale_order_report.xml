@@ -24,6 +24,61 @@
 
         <!-- 3. Bloque de datos en lugar de la fila estándar de información -->
         <xpath expr="//div[@id='informations']" position="replace">
+            <!-- Página «Vuestra propuesta»: solo en el presupuesto completo (con portada) -->
+            <div class="nds-proposal" t-if="nds_with_proposal and doc._nds_has_proposal()">
+                <div class="nds-title">
+                    <div class="nds-num">02</div>
+                    <h2 class="nds-h2">Vuestra propuesta</h2>
+                </div>
+                <table class="nds-prop-grid">
+                    <tr>
+                        <td class="nds-prop-main">
+                            <div class="nds-prop-block" t-if="doc.nds_punto_partida">
+                                <div class="nds-prop-label"><span class="nds-prop-bar"/>Punto de partida</div>
+                                <p t-foreach="doc._nds_paragraphs('nds_punto_partida')" t-as="nds_par" t-out="nds_par"/>
+                            </div>
+                            <div class="nds-prop-block" t-if="doc.nds_que_haremos">
+                                <div class="nds-prop-label"><span class="nds-prop-bar"/>Qué vamos a hacer</div>
+                                <p t-foreach="doc._nds_paragraphs('nds_que_haremos')" t-as="nds_par" t-out="nds_par"/>
+                            </div>
+                            <div class="nds-prop-block" t-if="doc.nds_incluye">
+                                <div class="nds-prop-label"><span class="nds-prop-bar"/>Qué incluye</div>
+                                <table class="nds-prop-list">
+                                    <tr t-foreach="doc._nds_items()" t-as="nds_item">
+                                        <td class="nds-prop-arrow">→</td>
+                                        <td t-out="nds_item"/>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                        <td class="nds-prop-gap"/>
+                        <td class="nds-prop-side">
+                            <span class="nds-label">Importe</span>
+                            <div class="nds-prop-amount">
+                                <span t-field="doc.amount_untaxed" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
+                            </div>
+                            <div class="nds-prop-small">IVA no incluido</div>
+                            <div class="nds-prop-note" t-if="doc.nds_nota_importe" t-out="doc.nds_nota_importe"/>
+                            <t t-if="doc.nds_plazo">
+                                <div class="nds-prop-sep"/>
+                                <span class="nds-label">Plazo estimado</span>
+                                <div class="nds-prop-value" t-out="doc.nds_plazo"/>
+                            </t>
+                            <t t-if="doc.validity_date and doc.state in ['draft', 'sent']">
+                                <div class="nds-prop-sep"/>
+                                <span class="nds-label">Válido hasta</span>
+                                <div class="nds-prop-value"><span t-field="doc.validity_date"/></div>
+                            </t>
+                            <div class="nds-prop-sep"/>
+                            <div class="nds-prop-foot">
+                                El detalle por conceptos, las condiciones y las formas de pago están en las
+                                páginas siguientes. Desde el enlace del correo podéis aceptar y firmar
+                                el presupuesto en línea.
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
             <div class="nds-title">
                 <div class="nds-num" t-if="doc.quotation_document_ids">03</div>
                 <h2 class="nds-h2">Servicios, importes y condiciones</h2>
@@ -98,6 +153,14 @@
         </xpath>
         <xpath expr="//span[@name='order_note']" position="before">
             <h3 class="nds-h3" t-if="not is_html_empty(doc.note)">Condiciones</h3>
+        </xpath>
+    </template>
+
+    <!-- La página «Vuestra propuesta» va solo en el informe completo, no en «Presupuesto sin portada» -->
+    <template id="report_saleorder_nds_proposal_flag" inherit_id="sale.report_saleorder"
+              name="NextaDS: página de propuesta en el presupuesto completo">
+        <xpath expr="//t[@t-call='sale.report_saleorder_raw']" position="before">
+            <t t-set="nds_with_proposal" t-value="True"/>
         </xpath>
     </template>
 </odoo>

@@ -326,14 +326,14 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
     // condiciones
     .nds-terms {
         display: block;
-        font-size: 9.4pt;
-        line-height: 1.5;
+        font-size: 9.1pt;
+        line-height: 1.46;
         color: $nds-body;
         text-align: left;
-        p { margin: 0 0 1.4mm 0; }
+        p { margin: 0 0 1.1mm 0; }
         p strong, p b {
             display: block;
-            margin-top: 3.2mm;
+            margin-top: 2.8mm;
             font-weight: 700;
             font-size: 8pt;
             letter-spacing: 0.14em;

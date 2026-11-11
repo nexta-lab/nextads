@@ -323,7 +323,9 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
     table.nds-prop-list {
         @include nds-no-borders;
         width: 100%;
-        border-collapse: collapse;
+        // separate (no collapse): wkhtmltopdf pinta líneas verticales con collapse + border-top
+        border-collapse: separate;
+        border-spacing: 0;
         > tbody > tr > td, > tr > td {
             border-top: 1px solid $nds-border !important;
             padding: 2.6mm 0 !important;

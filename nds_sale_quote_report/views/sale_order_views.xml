@@ -17,7 +17,7 @@
                     </div>
                     <div class="alert alert-warning" role="alert" invisible="not nds_proposal_missing">
                         Falta explicar al cliente qué vamos a hacer: ni el presupuesto, ni su plantilla, ni sus productos tienen ese texto.
-                        Escribidlo en «Qué vamos a hacer».
+                        Mientras tanto se imprime un texto genérico a partir de las secciones; escribid el vuestro en «Qué vamos a hacer».
                     </div>
                     <group>
                         <field name="nds_asunto" placeholder="Ej.: Web corporativa y posicionamiento orgánico"/>

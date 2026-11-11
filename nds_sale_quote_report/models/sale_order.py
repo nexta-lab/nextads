@@ -91,7 +91,9 @@ class SaleOrder(models.Model):
             for product in self.order_line.filtered(lambda l: not l.display_type).product_id.product_tmpl_id:
                 if product.nds_proposal_text and product.nds_proposal_text not in texts:
                     texts.append(product.nds_proposal_text)
-            return '\n'.join(texts)
+            if not texts:
+                texts.append(self._nds_default_que_haremos())
+            return '\n'.join(t for t in texts if t)
         if field_name == 'nds_incluye':
             titles = []
             for line in self.order_line.filtered(lambda l: not l.display_type and l.product_id):
@@ -126,10 +128,38 @@ class SaleOrder(models.Model):
             self._nds_paragraphs('nds_punto_partida') or self._nds_paragraphs('nds_que_haremos')
             or self._nds_items())
 
+    def _nds_default_que_haremos(self):
+        """Último recurso para que la propuesta nunca salga sin explicación: los bloques del
+        presupuesto (secciones) o, si no hay, los servicios. El comercial ve un aviso para cambiarlo."""
+        self.ensure_one()
+        blocks = []
+        for line in self.order_line.filtered(lambda l: l.display_type == 'line_section'):
+            name = self._nds_clean_title(line.name)
+            name = name[:1].upper() + name[1:].lower() if name.isupper() else name
+            if name and name not in blocks:
+                blocks.append(name)
+        if not blocks:
+            return ''
+        if len(blocks) == 1:
+            listed = blocks[0].lower()
+        else:
+            listed = ', '.join(b[:1].lower() + b[1:] for b in blocks[:-1]) + ' y ' + blocks[-1][:1].lower() + blocks[-1][1:]
+        return ("Os proponemos un proyecto organizado en %d bloques de trabajo: %s. En cada bloque "
+                "detallamos qué haremos y con qué dedicación, y lo validaremos con vosotros antes de "
+                "dar por cerrada cada fase." % (len(blocks), listed)) if len(blocks) > 1 else (
+                "Os proponemos un proyecto centrado en %s. Detallamos qué haremos y con qué dedicación, "
+                "y lo validaremos con vosotros antes de darlo por cerrado." % listed)
+
     def _nds_proposal_missing(self):
         """Avisos para el comercial: textos de la propuesta que se están rellenando solos o faltan."""
         self.ensure_one()
-        return not self.nds_que_haremos and not self._nds_effective_text('nds_que_haremos')
+        if self.nds_que_haremos:
+            return False
+        template = self.sale_order_template_id
+        if template and template.nds_que_haremos:
+            return False
+        products = self.order_line.filtered(lambda l: not l.display_type).product_id.product_tmpl_id
+        return not any(products.mapped('nds_proposal_text'))
 
     def _nds_note_groups(self):
         """Condiciones en bloques (título de cláusula + su texto) para que no se separen al paginar."""

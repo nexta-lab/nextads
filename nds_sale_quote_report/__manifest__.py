@@ -25,7 +25,7 @@ Cambia solo el informe de presupuesto / pedido de venta (no facturas ni albarane
     'website': "https://www.nextads.es",
     'license': "LGPL-3",
     'category': 'Sales/Sales',
-    'version': '18.0.1.8.6',
+    'version': '18.0.1.8.7',
     'depends': [
         'sale_management',
         'sale_pdf_quote_builder',

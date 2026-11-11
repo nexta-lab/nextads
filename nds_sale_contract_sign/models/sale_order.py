@@ -236,17 +236,13 @@ class SaleOrder(models.Model):
             or request.request_item_ids.sorted('mail_sent_order')[:1]
 
     def _nds_customer_sign_url(self):
-        """Enlace para que firme el cliente (el mismo que enviaría la app Firma por correo)."""
+        """Enlace para que firme el cliente sin iniciar sesión (como el del correo de Firma)."""
         self.ensure_one()
         item = self._nds_customer_sign_item().sudo()
         if not item:
             return False
-        url = item.access_url if 'access_url' in item._fields else False
-        if not url:
-            url = '/sign/document/mail/%s/%s' % (item.sign_request_id.id, item.access_token)
-        if url.startswith('/'):
-            url = self.get_base_url() + url
-        return url
+        # access_url (/my/signature/...) exige usuario de portal: se usa el enlace con token
+        return '%s/sign/document/%s/%s' % (self.get_base_url(), item.sign_request_id.id, item.access_token)
 
     def _nds_customer_has_to_sign(self):
         self.ensure_one()

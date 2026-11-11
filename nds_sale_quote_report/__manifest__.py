@@ -18,12 +18,14 @@ Cambia solo el informe de presupuesto / pedido de venta (no facturas ni albarane
   marcados por defecto en los presupuestos nuevos (no en tienda online ni renovaciones).
 * Pestaña «Propuesta» en el presupuesto con el asunto de la portada y los textos de la página
   «Vuestra propuesta», que se imprime con la tipografía del informe en el presupuesto completo.
+* Enlace del presupuesto (portal de clientes) con el mismo diseño que el PDF completo: portada,
+  presentación, «Vuestra propuesta», servicios y condiciones, próximos pasos y contacto.
 """,
     'author': "Nexta Digital Solutions",
     'website': "https://www.nextads.es",
     'license': "LGPL-3",
     'category': 'Sales/Sales',
-    'version': '18.0.1.6.0',
+    'version': '18.0.1.8.7',
     'depends': [
         'sale_management',
         'sale_pdf_quote_builder',
@@ -35,10 +37,14 @@ Cambia solo el informe de presupuesto / pedido de venta (no facturas ni albarane
         'data/quotation_documents.xml',
         'data/form_field_paths.xml',
         'views/sale_order_views.xml',
+        'views/sale_portal_templates.xml',
     ],
     'assets': {
         'web.report_assets_common': [
             'nds_sale_quote_report/static/src/scss/quote_report.scss',
+        ],
+        'web.assets_frontend': [
+            'nds_sale_quote_report/static/src/scss/portal.scss',
         ],
     },
     'installable': True,

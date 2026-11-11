@@ -33,15 +33,15 @@
                 <table class="nds-prop-grid">
                     <tr>
                         <td class="nds-prop-main">
-                            <div class="nds-prop-block" t-if="doc.nds_punto_partida">
+                            <div class="nds-prop-block" t-if="doc._nds_paragraphs('nds_punto_partida')">
                                 <div class="nds-prop-label"><span class="nds-prop-bar"/>Punto de partida</div>
                                 <p t-foreach="doc._nds_paragraphs('nds_punto_partida')" t-as="nds_par" t-out="nds_par"/>
                             </div>
-                            <div class="nds-prop-block" t-if="doc.nds_que_haremos">
+                            <div class="nds-prop-block" t-if="doc._nds_paragraphs('nds_que_haremos')">
                                 <div class="nds-prop-label"><span class="nds-prop-bar"/>Qué vamos a hacer</div>
                                 <p t-foreach="doc._nds_paragraphs('nds_que_haremos')" t-as="nds_par" t-out="nds_par"/>
                             </div>
-                            <div class="nds-prop-block" t-if="doc.nds_incluye">
+                            <div class="nds-prop-block" t-if="doc._nds_items()">
                                 <div class="nds-prop-label"><span class="nds-prop-bar"/>Qué incluye</div>
                                 <table class="nds-prop-list">
                                     <tr t-foreach="doc._nds_items()" t-as="nds_item">
@@ -130,29 +130,65 @@
             <attribute name="class" add="nds-lines" separator=" "/>
         </xpath>
 
-        <!-- 5. Descripción: título del servicio destacado y detalle debajo -->
+        <!--
+            5. Secciones pegadas a su primera línea. wkhtmltopdf no permite «no cortar después de»
+            una fila, así que el título de la sección se pinta dentro de la primera fila que le sigue
+            (que no se parte entre páginas) y la fila de sección suelta solo queda si no hay nada detrás.
+        -->
+        <xpath expr="//tbody[hasclass('sale_tbody')]/t[@t-foreach='lines_to_report']/tr" position="before">
+            <t t-set="nds_next" t-value="lines_to_report[line_index + 1] if not line_last else False"/>
+            <t t-set="nds_merge_section" t-value="line.display_type == 'line_section' and line.product_type != 'combo' and nds_next and nds_next.display_type != 'line_section' and nds_next.product_type != 'combo'"/>
+            <t t-if="nds_merge_section">
+                <t t-set="nds_pending_section" t-value="line"/>
+                <t t-set="current_section" t-value="line"/>
+                <t t-set="current_subtotal" t-value="0"/>
+            </t>
+        </xpath>
+        <xpath expr="//tbody[hasclass('sale_tbody')]/t[@t-foreach='lines_to_report']/tr" position="attributes">
+            <attribute name="t-if">not nds_merge_section</attribute>
+        </xpath>
+
+        <!-- 6. Descripción: título del servicio destacado (sin «(horas)») y detalle debajo -->
         <xpath expr="//td[@name='td_name']" position="replace">
-            <td name="td_name" class="nds-desc">
-                <t t-set="nx_pname" t-value="line.product_id.display_name or ''"/>
-                <t t-set="nx_text" t-value="line.name or ''"/>
-                <t t-set="nx_rest" t-value="nx_text[len(nx_pname):].strip() if nx_pname and nx_text.startswith(nx_pname) else ''"/>
-                <t t-set="nx_lines" t-value="(nx_rest or nx_text).strip().split('\n')"/>
-                <div class="nds-line-title" t-out="nx_lines[0]"/>
-                <div class="nds-line-desc" t-if="len(nx_lines) &gt; 1">
-                    <t t-foreach="nx_lines[1:]" t-as="nx_l">
+            <td name="td_name" t-att-class="'nds-desc nds-has-section' if nds_pending_section else 'nds-desc'">
+                <div t-if="nds_pending_section" class="nds-sec-in">
+                    <span class="nds-sec-bar"/><t t-out="nds_pending_section.name"/>
+                </div>
+                <t t-set="nds_pending_section" t-value="False"/>
+                <t t-set="nx_parts" t-value="doc._nds_line_parts(line)"/>
+                <div class="nds-line-title" t-out="nx_parts[0]"/>
+                <div class="nds-line-desc" t-if="nx_parts[1]">
+                    <t t-foreach="nx_parts[1]" t-as="nx_l">
                         <t t-out="nx_l"/><br t-if="not nx_l_last"/>
                     </t>
                 </div>
             </td>
         </xpath>
-
-        <!-- 6. Condiciones con su título y sin justificar -->
-        <xpath expr="//span[@name='order_note']" position="attributes">
-            <attribute name="t-attf-style"></attribute>
-            <attribute name="class">nds-terms</attribute>
+        <xpath expr="//td[@name='td_note_line']" position="attributes">
+            <attribute name="t-att-class">'nds-has-section' if nds_pending_section else None</attribute>
         </xpath>
-        <xpath expr="//span[@name='order_note']" position="before">
-            <h3 class="nds-h3" t-if="not is_html_empty(doc.note)">Condiciones</h3>
+        <xpath expr="//td[@name='td_note_line']/span" position="before">
+            <div t-if="nds_pending_section" class="nds-sec-in nds-sec-in-note">
+                <span class="nds-sec-bar"/><t t-out="nds_pending_section.name"/>
+            </div>
+            <t t-set="nds_pending_section" t-value="False"/>
+        </xpath>
+
+        <!-- 7. Condiciones: cada cláusula con su título en un bloque que no se separa al paginar -->
+        <xpath expr="//span[@name='order_note']" position="replace">
+            <!-- Filas de tabla y no div: wkhtmltopdf solo respeta «no partir» en las filas -->
+            <div class="nds-terms" name="order_note" t-if="not is_html_empty(doc.note)">
+                <table class="nds-terms-table">
+                    <tbody>
+                        <tr t-foreach="doc._nds_note_groups()" t-as="nds_group" class="nds-keep">
+                            <td>
+                                <h3 class="nds-h3" t-if="nds_group_first">Condiciones</h3>
+                                <t t-out="nds_group"/>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </xpath>
     </template>
 

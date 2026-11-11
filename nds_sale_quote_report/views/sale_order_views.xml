@@ -12,7 +12,12 @@
                         Textos de la portada y de la página «Vuestra propuesta» del presupuesto completo.
                         Escribid seguido, sin cortar las líneas a mano: el diseño las ajusta solo.
                         Cada salto de línea empieza un párrafo nuevo y, en «Qué incluye», un elemento nuevo de la lista.
-                        Si los tres textos están vacíos, esa página no se imprime.
+                        Lo que dejéis vacío se completa con los textos de la plantilla de presupuesto y de cada producto
+                        (ficha del producto › Ventas › «Qué hacemos en este servicio»); «Qué incluye», con los servicios del presupuesto.
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="not nds_proposal_missing">
+                        Falta explicar al cliente qué vamos a hacer: ni el presupuesto, ni su plantilla, ni sus productos tienen ese texto.
+                        Mientras tanto se imprime un texto genérico a partir de las secciones; escribid el vuestro en «Qué vamos a hacer».
                     </div>
                     <group>
                         <field name="nds_asunto" placeholder="Ej.: Web corporativa y posicionamiento orgánico"/>
@@ -25,6 +30,43 @@
                     <group string="Recuadro del importe">
                         <field name="nds_nota_importe" placeholder="Ej.: 12 h a 60 €/h. Licencia de Odoo por vuestra cuenta."/>
                         <field name="nds_plazo" placeholder="Ej.: 3 semanas desde que nos entregáis el contenido."/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Texto de cada servicio para la página «Vuestra propuesta» -->
+    <record id="product_template_form_nds_proposal" model="ir.ui.view">
+        <field name="name">product.template.form.nds.proposal</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='sales']//group[@name='description']" position="after">
+                <group string="Propuesta al cliente" name="nds_proposal">
+                    <field name="nds_proposal_text" colspan="2" nolabel="1"
+                           placeholder="En qué consiste el servicio y qué hacemos nosotros. Sale en «Vuestra propuesta» cuando el presupuesto no trae texto propio."/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Textos por defecto de «Vuestra propuesta» en las plantillas de presupuesto -->
+    <record id="sale_order_template_form_nds_proposal" model="ir.ui.view">
+        <field name="name">sale.order.template.form.nds.proposal</field>
+        <field name="model">sale.order.template</field>
+        <field name="inherit_id" ref="sale_management.sale_order_template_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook[@name='main_book']" position="inside">
+                <page string="Propuesta" name="nds_proposal">
+                    <div class="text-muted mb-3">
+                        Textos por defecto de la página «Vuestra propuesta» para los presupuestos de esta plantilla.
+                        Si el presupuesto trae los suyos, se usan los del presupuesto.
+                    </div>
+                    <group>
+                        <field name="nds_punto_partida"/>
+                        <field name="nds_que_haremos"/>
+                        <field name="nds_incluye" placeholder="Un elemento por línea."/>
                     </group>
                 </page>
             </xpath>

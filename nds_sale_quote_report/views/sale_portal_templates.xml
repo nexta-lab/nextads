@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Enlace del presupuesto (portal de clientes) con el diseño de marca de NextaDS.
+
+        Solo se aplica a los presupuestos que llevan la portada de marca (los nuevos la llevan por
+        defecto). Muestra en HTML lo mismo que el PDF completo: portada, presentación, «Vuestra
+        propuesta», servicios y condiciones (la parte estándar del portal) y próximos pasos.
+
+        Los textos de «Quiénes somos», «Cómo trabajamos» y «Próximos pasos» son los mismos que los
+        del PDF de la portada y del pie (static/quote_builder): si se cambian allí, hay que
+        cambiarlos también aquí.
+    -->
+    <template id="sale_order_portal_template_nds" inherit_id="sale.sale_order_portal_template"
+              name="NextaDS: enlace del presupuesto con diseño de marca" priority="50">
+
+        <!-- Antes del contenido estándar: portada, presentación y propuesta -->
+        <xpath expr="//div[@id='portal_sale_content']" position="before">
+            <t t-set="nds_branded" t-value="sale_order._nds_portal_branded()"/>
+            <t t-set="nds_is_quote" t-value="sale_order.state in ('draft', 'sent')"/>
+            <div t-if="nds_branded" class="nds-portal nds-portal-top">
+
+                <!-- Portada -->
+                <section class="nds-p-cover">
+                    <div class="nds-p-cover-shape"/>
+                    <img class="nds-p-cover-logo" src="/nds_sale_quote_report/static/img/nextads-logo-blanco.png" alt="Nexta DS"/>
+                    <div class="nds-p-cover-body">
+                        <div class="nds-p-eyebrow nds-p-eyebrow-light">Propuesta de servicios</div>
+                        <h1 class="nds-p-cover-title">
+                            Propuesta para<br/>
+                            <span t-out="sale_order.partner_id.commercial_partner_id.name"/>
+                        </h1>
+                        <div class="nds-p-cover-rule"/>
+                        <div t-if="sale_order.nds_asunto" class="nds-p-cover-subject" t-out="sale_order.nds_asunto"/>
+                    </div>
+                    <div class="nds-p-cover-meta">
+                        <div>
+                            <span class="nds-p-meta-label">Referencia</span>
+                            <span class="nds-p-meta-value" t-out="sale_order.name"/>
+                        </div>
+                        <div>
+                            <span class="nds-p-meta-label">Fecha</span>
+                            <span class="nds-p-meta-value" t-field="sale_order.date_order" t-options='{"widget": "date"}'/>
+                        </div>
+                        <div t-if="sale_order.user_id">
+                            <span class="nds-p-meta-label">Preparado por</span>
+                            <span class="nds-p-meta-value" t-out="sale_order.user_id.name"/>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 01 · Quiénes somos (mismo texto que la página 2 del PDF de la portada) -->
+                <section class="nds-p-section" id="nds_quienes_somos">
+                    <div class="nds-p-num">01</div>
+                    <h2 class="nds-p-h2">Quiénes somos</h2>
+                    <div class="row g-4 nds-p-intro" lang="es">
+                        <div class="col-md-6">
+                            <p>Somos <strong>Nexta Digital Solutions</strong>, una consultora tecnológica que nació en
+                            2020 y que recientemente ha alcanzado el nivel de <strong>Odoo Silver Partner</strong>.
+                            Ayudamos a las empresas a ordenar, digitalizar y automatizar su gestión.</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p>Formamos parte del <strong>Grupo Nexta</strong>, un grupo de empresas familiar que fue
+                            nuestro primer cliente y es ejemplo de digitalización: nuestras empresas se gestionan con
+                            Odoo, lo mismo que proponemos y utilizamos en nuestro día a día.</p>
+                        </div>
+                    </div>
+                    <div class="row g-3 nds-p-stats">
+                        <div class="col-6 col-xl-3">
+                            <div class="nds-p-stat"><strong>2020</strong><span>Año en que nace la consultora Nexta DS</span></div>
+                        </div>
+                        <div class="col-6 col-xl-3">
+                            <div class="nds-p-stat"><strong>Silver</strong><span>Nivel de partner de Odoo en España</span></div>
+                        </div>
+                        <div class="col-6 col-xl-3">
+                            <div class="nds-p-stat"><strong>40</strong><span>Referencias publicadas en nuestra ficha de partner</span></div>
+                        </div>
+                        <div class="col-6 col-xl-3">
+                            <div class="nds-p-stat"><strong>Equipo</strong><span>Desarrolladores, consultores, sistemas y marketing a vuestro servicio</span></div>
+                        </div>
+                    </div>
+                    <h3 class="nds-p-h3">Cómo trabajamos</h3>
+                    <ul class="nds-p-arrows">
+                        <li><strong>Primero entendemos vuestra empresa.</strong> Después hablamos de software.</li>
+                        <li><strong>Lo más estándar posible.</strong> Cada desarrollo a medida se convierte en deuda
+                            técnica a futuro. Por tanto, siempre trabajaremos con los desarrollos imprescindibles.</li>
+                        <li><strong>Alcance y coste claros antes de empezar.</strong> Si aparece algo nuevo por el camino,
+                            lo vemos con vosotros antes de seguir.</li>
+                        <li><strong>Os decimos que no</strong> cuando algo no es viable o no os conviene.</li>
+                    </ul>
+                </section>
+
+                <!-- 02 · Vuestra propuesta (pestaña «Propuesta» del presupuesto) -->
+                <section t-if="sale_order._nds_has_proposal()" class="nds-p-section" id="nds_vuestra_propuesta">
+                    <div class="nds-p-num">02</div>
+                    <h2 class="nds-p-h2">Vuestra propuesta</h2>
+                    <div class="row g-4">
+                        <div class="col-lg-7 col-xl-8">
+                            <div class="nds-p-block" t-if="sale_order._nds_paragraphs('nds_punto_partida')">
+                                <div class="nds-p-label"><span class="nds-p-bar"/>Punto de partida</div>
+                                <p t-foreach="sale_order._nds_paragraphs('nds_punto_partida')" t-as="nds_par" t-out="nds_par"/>
+                            </div>
+                            <div class="nds-p-block" t-if="sale_order._nds_paragraphs('nds_que_haremos')">
+                                <div class="nds-p-label"><span class="nds-p-bar"/>Qué vamos a hacer</div>
+                                <p t-foreach="sale_order._nds_paragraphs('nds_que_haremos')" t-as="nds_par" t-out="nds_par"/>
+                            </div>
+                            <div class="nds-p-block" t-if="sale_order._nds_items()">
+                                <div class="nds-p-label"><span class="nds-p-bar"/>Qué incluye</div>
+                                <ul class="nds-p-arrows nds-p-arrows-plain">
+                                    <li t-foreach="sale_order._nds_items()" t-as="nds_item" t-out="nds_item"/>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-xl-4">
+                            <div class="nds-p-side">
+                                <span class="nds-p-meta-label">Importe</span>
+                                <div class="nds-p-amount" t-field="sale_order.amount_untaxed"
+                                     t-options='{"widget": "monetary", "display_currency": sale_order.currency_id}'/>
+                                <div class="nds-p-small">IVA no incluido</div>
+                                <div class="nds-p-note" t-if="sale_order.nds_nota_importe" t-out="sale_order.nds_nota_importe"/>
+                                <t t-if="sale_order.nds_plazo">
+                                    <div class="nds-p-sep"/>
+                                    <span class="nds-p-meta-label">Plazo estimado</span>
+                                    <div class="nds-p-value" t-out="sale_order.nds_plazo"/>
+                                </t>
+                                <t t-if="sale_order.validity_date and nds_is_quote">
+                                    <div class="nds-p-sep"/>
+                                    <span class="nds-p-meta-label">Válido hasta</span>
+                                    <div class="nds-p-value" t-field="sale_order.validity_date"/>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 03 · Título de la parte estándar: servicios, importes y condiciones -->
+                <div class="nds-p-section nds-p-section-head" id="nds_servicios">
+                    <div class="nds-p-num">03</div>
+                    <h2 class="nds-p-h2">Servicios, importes y condiciones</h2>
+                </div>
+            </div>
+        </xpath>
+
+        <!-- Clase de marca en el contenido estándar (líneas, totales y condiciones) -->
+        <xpath expr="//div[@id='portal_sale_content']" position="attributes">
+            <attribute name="t-attf-class">#{'pb-5' if report_type == 'html' else ''} #{'nds-portal nds-portal-content' if nds_branded else ''}</attribute>
+        </xpath>
+
+        <!-- Después de los botones de aceptar: próximos pasos, contacto y cierre -->
+        <xpath expr="//div[@id='sale_order_communication']" position="before">
+            <div t-if="nds_branded" class="nds-portal nds-portal-bottom">
+                <section t-if="nds_is_quote" class="nds-p-section" id="nds_proximos_pasos">
+                    <div class="nds-p-num">04</div>
+                    <h2 class="nds-p-h2">Próximos pasos</h2>
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="nds-p-step">
+                                <span class="nds-p-step-n">1</span>
+                                <strong>Aceptad el presupuesto</strong>
+                                <p>Desde este enlace podéis revisarlo, firmarlo y aceptarlo en línea, sin imprimir nada.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="nds-p-step">
+                                <span class="nds-p-step-n">2</span>
+                                <strong>Fijamos el arranque</strong>
+                                <p>Os contactamos para acordar fechas, personas de referencia y los primeros pasos.</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="nds-p-step">
+                                <span class="nds-p-step-n">3</span>
+                                <strong>Nos ponemos en marcha</strong>
+                                <p>Empezamos a trabajar y os mantenemos al tanto en cada fase.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="nds-p-closing">
+                    <div class="nds-p-closing-shape"/>
+                    <div class="row g-4 align-items-center">
+                        <div class="col-md-6">
+                            <img class="nds-p-closing-logo" src="/nds_sale_quote_report/static/img/nextads-logo-blanco.png" alt="Nexta DS"/>
+                            <div class="nds-p-closing-title">Gracias por <span>vuestra confianza</span></div>
+                        </div>
+                        <div class="col-md-6" t-if="sale_order.user_id">
+                            <div class="nds-p-eyebrow nds-p-eyebrow-light">Vuestro contacto</div>
+                            <div class="nds-p-contact-name" t-out="sale_order.user_id.name"/>
+                            <div class="nds-p-contact-line" t-if="sale_order.user_id.email">
+                                <a t-att-href="'mailto:%s' % sale_order.user_id.email" t-out="sale_order.user_id.email"/>
+                            </div>
+                            <div class="nds-p-contact-line" t-if="sale_order.company_id.phone">
+                                <a t-att-href="'tel:%s' % sale_order.company_id.phone.replace(' ', '')" t-out="sale_order.company_id.phone"/>
+                            </div>
+                            <div class="nds-p-contact-hint">¿Alguna duda? Escribidnos aquí debajo y os contestamos en este mismo hilo.</div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- Líneas del presupuesto en el portal: título destacado sin «(horas)» y detalle debajo.
+         Prioridad 120: se aplica después de la vista manual «NextaDS: ocultar nombre de producto en
+         presupuesto online» (prioridad 99), que busca el span de line.name dentro de esta celda. -->
+    <template id="sale_order_portal_content_nds_lines" inherit_id="sale.sale_order_portal_content"
+              name="NextaDS: líneas del presupuesto en el portal" priority="120">
+        <xpath expr="//td[@id='product_name']" position="replace">
+            <td id="product_name" class="nds-p-line">
+                <t t-set="nx_parts" t-value="sale_order._nds_line_parts(line)"/>
+                <div class="nds-p-line-title" t-out="nx_parts[0]"/>
+                <div class="nds-p-line-desc" t-if="nx_parts[1]">
+                    <t t-foreach="nx_parts[1]" t-as="nx_l">
+                        <t t-out="nx_l"/><br t-if="not nx_l_last"/>
+                    </t>
+                </div>
+            </td>
+        </xpath>
+    </template>
+</odoo>

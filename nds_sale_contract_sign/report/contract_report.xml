@@ -1,0 +1,852 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Documentación contractual de NextaDS que se envía a firmar al aceptar un presupuesto.
+
+        Textos basados en los contratos de Montajes Industriales LYG (octubre-noviembre de 2026),
+        generalizados para cualquier cliente. Los datos variables salen del pedido:
+        cliente, fecha, referencia y líneas de cada servicio.
+    -->
+    <record id="action_report_nds_contract" model="ir.actions.report">
+        <field name="name">Documentación para firmar (contratos)</field>
+        <field name="model">sale.order</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">nds_sale_contract_sign.report_nds_contract</field>
+        <field name="report_file">nds_sale_contract_sign.report_nds_contract</field>
+        <field name="print_report_name">'%s - Documentación para firmar' % object.name</field>
+        <field name="paperformat_id" ref="nds_sale_quote_report.paperformat_nds_quote"/>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_nds_contract">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="nds_sale_contract_sign.report_nds_contract_document"/>
+            </t>
+        </t>
+    </template>
+
+    <!-- Encabezamiento común: REUNIDOS -->
+    <template id="report_nds_contract_parties">
+        <h4 class="nds-c-h">Reunidos</h4>
+        <p>De una parte, <b t-out="(company.name or '').upper()"/>, con NIF
+            <t t-out="(company.vat or '').replace('ES', '', 1) if (company.vat or '').startswith('ES') else company.vat"/>
+            y domicilio social en <t t-out="doc._nds_partner_address(company.partner_id)"/>, representada por
+            <t t-out="company.nds_contract_representative"/>, en calidad de
+            <t t-out="company.nds_contract_representative_title"/> (en adelante, «<b>NEXTA</b>»).</p>
+        <p>De otra parte, <b t-out="(client.name or '').upper()"/><t t-if="client.vat">, con NIF
+            <t t-out="(client.vat or '').replace('ES', '', 1) if (client.vat or '').startswith('ES') else client.vat"/></t>
+            <t t-if="client.street or client.city"> y domicilio en <t t-out="doc._nds_partner_address(client)"/></t>,
+            representada por la persona que firma esta documentación, cuyo nombre y cargo constan en la página de
+            firmas (en adelante, «<b t-out="client_label"/>»).</p>
+        <p>Ambas partes (las «Partes») se reconocen la capacidad legal necesaria para obligarse y</p>
+    </template>
+
+    <template id="report_nds_contract_document">
+        <t t-set="client" t-value="doc.partner_id.commercial_partner_id"/>
+        <t t-set="company" t-value="doc.company_id"/>
+        <t t-set="parts" t-value="doc._nds_report_parts()"/>
+        <t t-set="date_str" t-value="doc._nds_contract_date_str()"/>
+        <t t-set="city" t-value="company.nds_contract_city or company.city"/>
+        <t t-set="support_email" t-value="company.nds_contract_support_email or company.email"/>
+        <t t-set="romans" t-value="['I', 'II', 'III']"/>
+        <t t-set="nds_header_tag" t-value="'Documentación · %s' % doc.name"/>
+        <t t-call="nds_sale_quote_report.external_layout_nds">
+            <div class="page nds-contract">
+
+                <!-- Índice -->
+                <div class="nds-title">
+                    <div class="nds-eyebrow">Documentación del pedido <t t-out="doc.name"/></div>
+                    <h2 class="nds-h2">Documentación para firmar</h2>
+                </div>
+                <p class="nds-c-lead">Esta documentación acompaña al presupuesto <b t-out="doc.name"/> aceptado por
+                    <b t-out="client.name"/>. Contiene los documentos siguientes, que se firman todos juntos en la
+                    página de firmas del final.</p>
+                <table class="nds-c-index">
+                    <tr t-foreach="parts" t-as="part">
+                        <td class="nds-c-index-n" t-out="romans[part_index]"/>
+                        <td>
+                            <t t-if="part == 'nda'">Acuerdo de confidencialidad y contrato de encargo del tratamiento (Anexo I)</t>
+                            <t t-if="part == 'hosting'">Contrato de servidor y copias de seguridad</t>
+                            <t t-if="part == 'support'">Contrato de soporte, mantenimiento y mejoras de Odoo</t>
+                        </td>
+                    </tr>
+                </table>
+
+                <t t-foreach="parts" t-as="part">
+                    <t t-set="roman" t-value="romans[part_index]"/>
+
+                    <!-- ===================================================================== -->
+                    <!-- ACUERDO DE CONFIDENCIALIDAD Y ENCARGO DEL TRATAMIENTO                    -->
+                    <!-- ===================================================================== -->
+                    <div t-if="part == 'nda'" class="nds-c-doc">
+                        <div class="nds-c-docnum">Documento <t t-out="roman"/></div>
+                        <h3 class="nds-c-title">Acuerdo de confidencialidad</h3>
+                        <div class="nds-c-subtitle">y contrato de encargo del tratamiento (Anexo I)</div>
+                        <p>En <t t-out="city"/>, a <t t-out="date_str"/>.</p>
+                        <t t-call="nds_sale_contract_sign.report_nds_contract_parties">
+                            <t t-set="client_label" t-value="'EL CLIENTE'"/>
+                        </t>
+                        <h4 class="nds-c-h">Exponen</h4>
+                        <p>I. Que EL CLIENTE ha contratado o está valorando contratar con NEXTA servicios de consultoría,
+                            implantación, soporte, mantenimiento, desarrollo, alojamiento u otros servicios relacionados
+                            con su sistema de gestión y sus herramientas digitales (en adelante, el «Proyecto»).</p>
+                        <p>II. Que, para valorar y ejecutar el Proyecto, las Partes van a intercambiar información técnica,
+                            económica, comercial y organizativa de carácter reservado, y NEXTA puede acceder a los sistemas
+                            de EL CLIENTE y a los datos personales que contienen.</p>
+                        <p>III. Que las Partes desean regular la protección de esa información y, mediante el Anexo I, el
+                            tratamiento de datos personales que NEXTA realice por cuenta de EL CLIENTE, de forma que este
+                            Acuerdo sirva de base a todos los servicios que EL CLIENTE contrate con NEXTA, sin necesidad de
+                            repetir estas cláusulas en cada contrato.</p>
+                        <p>Por ello, suscriben el presente Acuerdo de Confidencialidad (el «Acuerdo»), que se regirá por las
+                            siguientes</p>
+                        <h4 class="nds-c-h">Cláusulas</h4>
+
+                        <h5>1. Objeto</h5>
+                        <p>El Acuerdo regula las condiciones en que cada Parte (la «Parte Receptora») recibe, conserva y
+                            utiliza la Información Confidencial de la otra (la «Parte Reveladora»), con la única finalidad
+                            de valorar, preparar y ejecutar el Proyecto y los servicios que las Partes contraten en relación
+                            con él (la «Finalidad»).</p>
+
+                        <h5>2. Información Confidencial</h5>
+                        <p>2.1. Es Información Confidencial toda la información que una Parte revele o haga accesible a la
+                            otra, por cualquier medio y en cualquier soporte, antes o después de la firma, sobre su
+                            actividad, organización, clientes, proveedores, personal, precios, condiciones comerciales,
+                            procesos, sistemas, credenciales, código fuente, documentación y datos, así como los análisis,
+                            mapas de procesos, informes y documentos que cualquiera de las Partes elabore a partir de ella.</p>
+                        <p>2.2. Tiene en todo caso la consideración de Información Confidencial de EL CLIENTE: el contenido
+                            de sus bases de datos y sistemas; la información sobre sus clientes, proveedores y operaciones;
+                            y la información de su personal.</p>
+                        <p>2.3. Tiene en todo caso la consideración de Información Confidencial de NEXTA: su metodología de
+                            trabajo, plantillas, herramientas, módulos y desarrollos propios, propuestas y presupuestos,
+                            precios y condiciones comerciales.</p>
+                        <p>2.4. Las credenciales de acceso (usuarios, contraseñas, claves, certificados y tokens) que una
+                            Parte facilite a la otra se tratarán con el máximo nivel de reserva, se usarán solo por las
+                            personas autorizadas y no se compartirán ni se guardarán en texto claro fuera de un gestor de
+                            contraseñas o sistema equivalente.</p>
+
+                        <h5>3. Obligaciones de la Parte Receptora</h5>
+                        <p>La Parte Receptora se obliga a: (a) usar la Información Confidencial exclusivamente para la
+                            Finalidad; (b) no revelarla a terceros sin el consentimiento previo y por escrito de la Parte
+                            Reveladora; (c) darla a conocer solo a las personas de su organización, colaboradores y
+                            subcontratistas que necesiten conocerla para la Finalidad, informándoles de su carácter
+                            confidencial y exigiéndoles por escrito obligaciones de confidencialidad equivalentes a las de
+                            este Acuerdo, respondiendo de su incumplimiento como si fuera propio; (d) protegerla con medidas
+                            de seguridad razonables y, como mínimo, con la misma diligencia que aplica a su propia
+                            información reservada; (e) no copiarla ni reproducirla más allá de lo necesario para la
+                            Finalidad; y (f) comunicar a la otra Parte, sin dilación, cualquier uso o acceso no autorizado
+                            del que tenga conocimiento, y colaborar para limitar sus efectos.</p>
+
+                        <h5>4. Excepciones</h5>
+                        <p>4.1. Las obligaciones de confidencialidad no se aplican a la información que la Parte Receptora
+                            acredite que: (a) era de dominio público al recibirla o lo pasó a ser después sin incumplimiento
+                            de este Acuerdo; (b) ya conocía legítimamente y sin deber de reserva antes de recibirla;
+                            (c) recibió legítimamente de un tercero no sujeto a deber de reserva; o (d) desarrolló de forma
+                            independiente sin utilizar la Información Confidencial.</p>
+                        <p>4.2. Si una ley, una autoridad o un tribunal obligan a revelar Información Confidencial, la Parte
+                            Receptora lo comunicará previamente a la otra Parte, si la ley lo permite, y revelará solo la
+                            parte estrictamente exigida.</p>
+                        <p>4.3. Las excepciones anteriores no se aplican a los datos personales, que se regirán siempre por
+                            el Anexo I y por la normativa de protección de datos.</p>
+
+                        <h5>5. Titularidad y propiedad intelectual</h5>
+                        <p>5.1. Toda la Información Confidencial sigue siendo propiedad de la Parte Reveladora. Este Acuerdo
+                            no concede a la Parte Receptora ninguna licencia ni derecho sobre ella, salvo su uso para la
+                            Finalidad.</p>
+                        <p>5.2. NEXTA conserva la titularidad de los derechos de propiedad intelectual sobre el código, los
+                            módulos y los desarrollos que realice, así como sobre su metodología, plantillas y herramientas.
+                            Una vez pagados, NEXTA concede a EL CLIENTE una licencia de uso no exclusiva, indefinida,
+                            irrevocable y sin coste adicional sobre los desarrollos realizados para él, que le permite
+                            usarlos para su actividad, en cualquier servidor, acceder a su código fuente y modificarlos o
+                            encargar su mantenimiento a terceros, también si deja de contratar con NEXTA. La licencia no
+                            permite vender, distribuir ni sublicenciar los desarrollos a terceros ajenos a EL CLIENTE.</p>
+                        <p>5.3. Odoo y los módulos de la comunidad o de terceros se rigen por sus propias licencias. EL
+                            CLIENTE podrá usar libremente para su actividad los documentos y entregables elaborados para él
+                            (mapas de procesos, actas, guías e informes). NEXTA podrá reutilizar en otros proyectos los
+                            componentes y conocimientos genéricos de sus desarrollos, pero nunca la Información Confidencial
+                            de EL CLIENTE ni los elementos que reflejen sus procesos o datos.</p>
+                        <p>5.4. Lo pactado expresamente por escrito en un presupuesto o contrato de servicio sobre la
+                            propiedad de un desarrollo concreto prevalecerá sobre esta cláusula.</p>
+
+                        <h5>6. Devolución y destrucción</h5>
+                        <p>Al terminar la relación, o antes si la Parte Reveladora lo solicita por escrito, la Parte
+                            Receptora devolverá o destruirá la Información Confidencial y sus copias, a elección de la Parte
+                            Reveladora, y lo confirmará por escrito. Podrá conservar lo que la ley le obligue a guardar, y
+                            las copias de seguridad automáticas hasta su borrado ordinario, en ambos casos bajo el mismo
+                            deber de reserva. Los datos personales se devolverán o suprimirán conforme al Anexo I.</p>
+
+                        <h5>7. Secretos empresariales</h5>
+                        <p>Las Partes reconocen que parte de la Información Confidencial puede constituir secreto
+                            empresarial conforme a la Ley 1/2019, de 20 de febrero, de Secretos Empresariales, y que este
+                            Acuerdo es una de las medidas razonables adoptadas para mantenerla en secreto. Su obtención,
+                            utilización o revelación no autorizada será un incumplimiento grave de este Acuerdo, sin
+                            perjuicio de las acciones que dicha ley reconoce.</p>
+
+                        <h5>8. No captación de personal</h5>
+                        <p>8.1. Durante la relación entre las Partes y los doce (12) meses siguientes a su terminación,
+                            ninguna de ellas contratará ni incorporará, directa o indirectamente (incluso como profesional
+                            autónomo, a través de sociedades interpuestas o de otros proveedores), a ninguna persona, propia
+                            o de empresas colaboradoras de la otra Parte, que haya participado en el Proyecto, ni la
+                            inducirá a dejar de prestarle servicios, salvo autorización previa y por escrito de la otra
+                            Parte.</p>
+                        <p>8.2. En caso de incumplimiento, la Parte incumplidora abonará a la otra, como cláusula penal
+                            conforme al artículo 1152 del Código Civil, una cantidad equivalente a la retribución bruta o a
+                            los honorarios percibidos por esa persona en los doce (12) meses anteriores a su incorporación,
+                            sin perjuicio de reclamar los daños que la excedan.</p>
+                        <p>8.3. No se aplica a las candidaturas que la persona presente por su propia iniciativa en
+                            respuesta a ofertas de empleo públicas y no dirigidas específicamente a ella.</p>
+
+                        <h5>9. Duración</h5>
+                        <p>9.1. El Acuerdo entra en vigor en la fecha de su firma, se aplica también a la Información
+                            Confidencial intercambiada antes de esa fecha con motivo del Proyecto y permanece vigente
+                            mientras las Partes mantengan relación.</p>
+                        <p>9.2. Las obligaciones de confidencialidad subsisten durante cinco (5) años desde la terminación
+                            de la relación. Para los secretos empresariales y las credenciales de acceso, subsisten mientras
+                            la información conserve ese carácter. Las obligaciones sobre datos personales subsisten sin
+                            límite temporal.</p>
+
+                        <h5>10. Incumplimiento</h5>
+                        <p>El incumplimiento de este Acuerdo faculta a la Parte perjudicada a reclamar la indemnización de
+                            los daños y perjuicios causados y a solicitar las medidas judiciales necesarias para hacer cesar
+                            el incumplimiento, así como a resolver los contratos de servicios vigentes entre las Partes si
+                            el incumplimiento es grave.</p>
+
+                        <h5>11. Encargo del tratamiento de datos personales</h5>
+                        <p>11.1. Cuando, para la Finalidad, NEXTA acceda a datos personales de los que EL CLIENTE es
+                            responsable, lo hará como encargada del tratamiento, en los términos del Anexo I, que forma parte
+                            inseparable de este Acuerdo y cumple lo exigido por el artículo 28 del Reglamento (UE) 2016/679
+                            (RGPD).</p>
+                        <p>11.2. El Anexo I se aplica a todos los servicios que EL CLIENTE contrate con NEXTA. Los contratos
+                            de cada servicio se remitirán a él y podrán completarlo, pero no rebajar sus garantías. En caso
+                            de contradicción en materia de protección de datos, prevalecerá el Anexo I.</p>
+
+                        <h5>12. Datos de los firmantes y personas de contacto</h5>
+                        <p>Cada Parte tratará los datos de los firmantes y de las personas de contacto de la otra como
+                            responsable, con la finalidad de gestionar esta relación, sobre la base de la ejecución del
+                            Acuerdo y del interés legítimo en mantener el contacto profesional (art. 6.1.b y f RGPD y
+                            art. 19 LOPDGDD), durante la relación y los plazos de prescripción de las acciones que de ella
+                            deriven. Los interesados pueden ejercer sus derechos de acceso, rectificación, supresión,
+                            oposición, limitación y portabilidad ante la Parte que corresponda, en las direcciones de la
+                            cláusula 13, y reclamar ante la Agencia Española de Protección de Datos. Cada Parte informará de
+                            esta cláusula a las personas de contacto cuyos datos facilite.</p>
+
+                        <h5>13. Notificaciones</h5>
+                        <p>Las comunicaciones se harán por escrito a las direcciones de correo electrónico
+                            <t t-out="company.email"/> (NEXTA) y <t t-out="doc.partner_id.email or client.email"/>
+                            (EL CLIENTE), o a las que cada Parte comunique después. Las comunicaciones de incumplimiento o de
+                            terminación se harán además por un medio que deje constancia de su recepción.</p>
+
+                        <h5>14. Integridad, firma y nulidad parcial</h5>
+                        <p>14.1. Este Acuerdo y su Anexo sustituyen a cualquier pacto previo sobre su objeto. Su
+                            modificación exigirá acuerdo escrito de ambas Partes, salvo la actualización de la lista de
+                            subencargados, que seguirá el procedimiento del Anexo I.</p>
+                        <p>14.2. El Acuerdo puede firmarse de forma manuscrita o electrónica, incluida la firma a través de
+                            la aplicación Firma de Odoo, con idéntica validez.</p>
+                        <p>14.3. Si alguna cláusula fuera declarada nula, se tendrá por no puesta y el resto conservará su
+                            validez.</p>
+
+                        <h5>15. Ley aplicable y jurisdicción</h5>
+                        <p>15.1. El Acuerdo se rige por la ley española.</p>
+                        <p>15.2. Antes de acudir a los tribunales, las Partes intentarán resolver cualquier controversia
+                            mediante negociación directa, iniciada por comunicación escrita con una propuesta concreta. Si en
+                            treinta (30) días desde su recepción no hay acuerdo, quedará abierta la vía judicial. Esta
+                            negociación tendrá la consideración de medio adecuado de solución de controversias a efectos de
+                            la Ley Orgánica 1/2025, de 2 de enero.</p>
+                        <p>15.3. Las Partes se someten, con renuncia a cualquier otro fuero, a los Juzgados y Tribunales de
+                            Castellón de la Plana.</p>
+
+                        <!-- Anexo I -->
+                        <div class="nds-c-annex">
+                            <h4 class="nds-c-h">Anexo I · Contrato de encargo del tratamiento</h4>
+                            <p class="nds-c-note">(Artículo 28 del Reglamento (UE) 2016/679 y artículo 33 de la Ley
+                                Orgánica 3/2018)</p>
+
+                            <h5>1. Partes y papeles</h5>
+                            <p>EL CLIENTE es el <b>responsable del tratamiento</b> y NEXTA, la <b>encargada del
+                                tratamiento</b>. El acceso de NEXTA a los datos no es una comunicación de datos, sino un
+                                tratamiento por cuenta de EL CLIENTE (art. 33 LOPDGDD).</p>
+
+                            <h5>2. Servicios cubiertos y descripción del tratamiento</h5>
+                            <p>Este Anexo se aplica a los siguientes servicios, desde el momento en que cada uno se contrate
+                                y mientras esté vigente:</p>
+                            <table class="nds-c-table">
+                                <thead><tr><th>Servicio</th><th>Tratamiento que realiza NEXTA</th></tr></thead>
+                                <tbody>
+                                    <tr><td>A. Análisis y consultoría</td><td>Acceso y consulta de los datos de los sistemas
+                                        y de la documentación que facilite EL CLIENTE, para analizar procesos y elaborar
+                                        diagnósticos y propuestas.</td></tr>
+                                    <tr><td>B. Implantación, soporte, mantenimiento y mejoras</td><td>Acceso, consulta,
+                                        modificación, importación y exportación de datos para configurar, migrar, resolver
+                                        incidencias, desarrollar y probar mejoras.</td></tr>
+                                    <tr><td>C. Alojamiento y copias de seguridad</td><td>Alojamiento de las instancias de
+                                        producción y pruebas, copias de seguridad y restauración, y envío del correo
+                                        saliente generado por el sistema.</td></tr>
+                                    <tr><td>D. Traslados de servidor</td><td>Recepción de copias de la base de datos y de
+                                        los archivos procedentes de otros proveedores, carga en el nuevo servidor y
+                                        verificación.</td></tr>
+                                    <tr><td>E. Web y marketing digital</td><td>Gestión de formularios, contactos y
+                                        estadísticas de la web y de las campañas que contrate EL CLIENTE.</td></tr>
+                                </tbody>
+                            </table>
+                            <p><b>Finalidad:</b> exclusivamente la prestación de los servicios contratados.
+                                <b>Naturaleza:</b> tratamiento automatizado en los sistemas de EL CLIENTE y en la
+                                infraestructura indicada en el Apéndice 1.</p>
+                            <p><b>Categorías de interesados:</b> personal de EL CLIENTE; clientes, proveedores y sus
+                                personas de contacto; usuarios de los sistemas; y otras personas cuyos datos EL CLIENTE
+                                registre en ellos.</p>
+                            <p><b>Tipos de datos:</b> identificativos y de contacto; datos laborales y profesionales;
+                                datos económicos y bancarios (cuentas, facturas, pagos, gastos); y datos de acceso y uso de
+                                los sistemas.</p>
+                            <p><b>Categorías especiales:</b> NEXTA no tratará, en principio, datos de salud ni otras
+                                categorías especiales (art. 9 RGPD). Si EL CLIENTE necesita registrarlos en sus sistemas, lo
+                                comunicará previamente a NEXTA para revisar las medidas de seguridad.</p>
+
+                            <h5>3. Duración</h5>
+                            <p>El encargo dura mientras esté vigente cualquiera de los servicios de la cláusula 2. Al
+                                terminar el último, se aplicará la cláusula 6.9.</p>
+
+                            <h5>4. Obligaciones de EL CLIENTE como responsable</h5>
+                            <p>EL CLIENTE se obliga a: (a) disponer de una base jurídica para los tratamientos y haber
+                                informado a los interesados, incluido su personal, conforme a los artículos 13 y 14 RGPD;
+                                (b) dar a NEXTA instrucciones documentadas, considerándose tales las que resulten de este
+                                Anexo, de los contratos y presupuestos de servicio y de las peticiones que hagan por escrito
+                                (correo electrónico o sistema de tickets) las personas designadas por EL CLIENTE;
+                                (c) gestionar los usuarios de sus sistemas y sus permisos, y retirar de inmediato los
+                                accesos de quienes dejen la empresa o dejen de necesitarlos; y (d) supervisar el tratamiento,
+                                incluso mediante las auditorías de la cláusula 6.8.</p>
+
+                            <h5>5. Proveedores anteriores y herramientas de terceros</h5>
+                            <p>5.1. Cuando el servicio incluya recibir datos de un proveedor anterior, EL CLIENTE instruye a
+                                NEXTA para recibirlos y dará al proveedor anterior la instrucción escrita correspondiente.
+                                Corresponde a EL CLIENTE exigir a ese proveedor, una vez completado el traslado, la supresión
+                                de los datos y el certificado que lo acredite.</p>
+                            <p>5.2. Las herramientas y sistemas de terceros que use EL CLIENTE quedan fuera de este encargo
+                                mientras no se contrate expresamente su integración. Su responsable y su desarrollador
+                                responden de su propio tratamiento.</p>
+
+                            <h5>6. Obligaciones de NEXTA como encargada</h5>
+                            <p>6.1. <b>Instrucciones.</b> Tratar los datos solo siguiendo las instrucciones documentadas de
+                                EL CLIENTE y para la finalidad del servicio, incluso en lo relativo a transferencias
+                                internacionales. Si una instrucción infringe, a su juicio, la normativa de protección de
+                                datos, lo comunicará de inmediato a EL CLIENTE y podrá suspender su ejecución hasta que EL
+                                CLIENTE la confirme o modifique.</p>
+                            <p>6.2. <b>Confidencialidad.</b> Garantizar que las personas autorizadas para tratar los datos se
+                                han comprometido por escrito a guardar confidencialidad, también después de terminar su
+                                relación con NEXTA, y han recibido la formación necesaria.</p>
+                            <p>6.3. <b>Seguridad.</b> Aplicar las medidas técnicas y organizativas del artículo 32 RGPD
+                                apropiadas al riesgo, incluidas como mínimo las del Apéndice 2.</p>
+                            <p>6.4. <b>Subencargados.</b> EL CLIENTE otorga a NEXTA una autorización general para recurrir a
+                                los subencargados del Apéndice 1. NEXTA comunicará por correo electrónico cualquier
+                                incorporación o sustitución con al menos quince (15) días de antelación, indicando su
+                                identidad, el servicio y la ubicación del tratamiento. EL CLIENTE podrá oponerse de forma
+                                motivada dentro de ese plazo; si la oposición se basa en razones de protección de datos y no
+                                se encuentra una alternativa razonable, EL CLIENTE podrá terminar el servicio afectado sin
+                                penalización. NEXTA impondrá a cada subencargado, por contrato, obligaciones equivalentes a
+                                las de este Anexo y seguirá siendo plenamente responsable de su cumplimiento ante EL
+                                CLIENTE.</p>
+                            <p>6.5. <b>Transferencias internacionales.</b> No tratar ni permitir el tratamiento de los datos
+                                fuera del Espacio Económico Europeo, salvo por los subencargados del Apéndice 1 y con las
+                                garantías de los artículos 45 o 46 RGPD que allí se indican.</p>
+                            <p>6.6. <b>Derechos de los interesados.</b> Si un interesado se dirige a NEXTA para ejercer sus
+                                derechos, se lo trasladará a EL CLIENTE en un plazo máximo de cinco (5) días hábiles y le
+                                ayudará a responder, en la medida de lo posible, dentro del plazo legal.</p>
+                            <p>6.7. <b>Violaciones de seguridad.</b> Notificar a EL CLIENTE, sin dilación indebida y en un
+                                plazo máximo de cuarenta y ocho (48) horas desde que tenga conocimiento, cualquier violación
+                                de seguridad que afecte a los datos, con la información del artículo 33.3 RGPD de que
+                                disponga, y colaborar en su gestión. Corresponde a EL CLIENTE decidir y realizar la
+                                notificación a la Agencia Española de Protección de Datos y, en su caso, a los
+                                interesados.</p>
+                            <p>6.8. <b>Colaboración y auditoría.</b> Ayudar a EL CLIENTE, cuando proceda, en las evaluaciones
+                                de impacto y consultas previas; poner a su disposición la información necesaria para
+                                demostrar el cumplimiento de este Anexo; y permitir auditorías de EL CLIENTE o de un auditor
+                                que designe, sujeto a confidencialidad, con un preaviso de quince (15) días, en horario
+                                laboral y sin acceso a datos de otros clientes. Una auditoría al año es gratuita; las
+                                adicionales, salvo que se deban a un incumplimiento de NEXTA, se facturarán según la tarifa
+                                vigente.</p>
+                            <p>6.9. <b>Fin del encargo.</b> Al terminar el último servicio, NEXTA entregará a EL CLIENTE, si
+                                los aloja, una copia completa de la base de datos y de los archivos adjuntos en un formato
+                                estándar y, una vez EL CLIENTE confirme su recepción o pasados treinta (30) días, suprimirá
+                                los datos y sus copias, salvo obligación legal de conservarlos, y lo certificará por escrito.
+                                Las copias de seguridad se eliminarán al cumplirse su plazo de retención ordinario.</p>
+                            <p>6.10. <b>Registro.</b> Llevar el registro de actividades de tratamiento que efectúa como
+                                encargada (art. 30.2 RGPD).</p>
+
+                            <h5>7. Responsabilidad</h5>
+                            <p>Cada Parte responde de sus propios incumplimientos de la normativa de protección de datos y de
+                                este Anexo, conforme al artículo 82 RGPD. Si NEXTA destina los datos a otra finalidad, los
+                                comunica o los utiliza incumpliendo este Anexo, será considerada responsable del tratamiento
+                                a todos los efectos (art. 28.10 RGPD).</p>
+
+                            <h5>Apéndice 1 · Subencargados autorizados</h5>
+                            <table class="nds-c-table nds-c-table-small">
+                                <thead><tr><th>Subencargado</th><th>Servicio</th><th>Ubicación</th><th>Garantía</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Hetzner Online GmbH (Gunzenhausen, Alemania)</td>
+                                        <td>Infraestructura de servidores y almacenamiento de copias (servicio C)</td>
+                                        <td>Centros de datos en la UE</td>
+                                        <td>Tratamiento dentro de la UE. Contrato de encargo (art. 28 RGPD) con NEXTA</td></tr>
+                                    <tr><td>Amazon Web Services EMEA SARL (Luxemburgo), servicio Amazon SES</td>
+                                        <td>Envío del correo electrónico saliente generado por el sistema (servicio C)</td>
+                                        <td>Región de la UE; posible acceso desde EE. UU.</td>
+                                        <td>Contrato de encargo de AWS, con las cláusulas contractuales tipo de la Comisión Europea</td></tr>
+                                    <tr><td>Google Ireland Ltd. (Google Workspace)</td>
+                                        <td>Correo electrónico y almacenamiento de la documentación que EL CLIENTE envíe a NEXTA</td>
+                                        <td>UE / EE. UU.</td>
+                                        <td>Contrato de encargo de Google y Marco de Privacidad de Datos UE-EE. UU. o cláusulas contractuales tipo</td></tr>
+                                    <tr><td>Anthropic Ireland, Limited (Dublín, Irlanda)</td>
+                                        <td>Asistente de inteligencia artificial Claude (plan de empresa), para análisis, documentación y soporte de los servicios A, B, D y E, solo cuando el servicio lo requiera</td>
+                                        <td>EE. UU. y otros países donde operen Anthropic y sus subencargados</td>
+                                        <td>Contrato de encargo de Anthropic, con las cláusulas contractuales tipo de la Comisión Europea. Anthropic no utiliza los datos del cliente para entrenar sus modelos</td></tr>
+                                </tbody>
+                            </table>
+
+                            <h5>Apéndice 2 · Medidas de seguridad mínimas</h5>
+                            <p>1. <b>Accesos:</b> usuarios nominativos para cada persona de NEXTA, con los permisos mínimos
+                                necesarios; doble factor de autenticación en las cuentas de administración, cuando el
+                                sistema lo permita; retirada de accesos el mismo día en que una persona deje de participar
+                                en el servicio.</p>
+                            <p>2. <b>Credenciales:</b> custodia en un gestor de contraseñas corporativo; acceso a los
+                                servidores solo mediante claves SSH personales; prohibición de compartir credenciales.</p>
+                            <p>3. <b>Comunicaciones:</b> acceso a los sistemas solo mediante conexión cifrada (HTTPS/TLS);
+                                servidores protegidos por cortafuegos, con solo los puertos necesarios abiertos.</p>
+                            <p>4. <b>Actualizaciones:</b> aplicación periódica de los parches de seguridad del sistema
+                                operativo y de Odoo dentro de la versión contratada, probándolos antes en la instancia de
+                                pruebas.</p>
+                            <p>5. <b>Copias de seguridad:</b> en una ubicación distinta del servidor de producción y dentro
+                                de la UE, con acceso restringido, retención según el contrato del servicio C y pruebas
+                                periódicas de restauración.</p>
+                            <p>6. <b>Instancia de pruebas:</b> mismas medidas que la de producción, con el correo saliente
+                                y las tareas automáticas desactivados.</p>
+                            <p>7. <b>Datos fuera del sistema:</b> los datos de EL CLIENTE no se usarán para
+                                demostraciones, formación, contenidos ni pruebas ajenas al servicio; las exportaciones se
+                                guardarán solo en sistemas corporativos de NEXTA y se borrarán cuando dejen de ser
+                                necesarias.</p>
+                            <p>8. <b>Registro:</b> registro de las intervenciones de NEXTA en el sistema (tickets y
+                                registros del sistema y del servidor).</p>
+                            <p>9. <b>Herramientas de inteligencia artificial:</b> NEXTA no introducirá datos personales de
+                                EL CLIENTE en herramientas de inteligencia artificial salvo que figuren como subencargados en
+                                el Apéndice 1, con contrato de encargo y compromiso de no usar los datos para entrenar sus
+                                modelos.</p>
+                        </div>
+                    </div>
+
+                    <!-- ===================================================================== -->
+                    <!-- CONTRATO DE SERVIDOR Y COPIAS DE SEGURIDAD                              -->
+                    <!-- ===================================================================== -->
+                    <div t-if="part == 'hosting'" class="nds-c-doc">
+                        <t t-set="lines" t-value="doc._nds_contract_lines('hosting')"/>
+                        <div class="nds-c-docnum">Documento <t t-out="roman"/></div>
+                        <h3 class="nds-c-title">Contrato de servidor y copias de seguridad</h3>
+                        <p>En <t t-out="city"/>, a <t t-out="date_str"/>.</p>
+                        <t t-call="nds_sale_contract_sign.report_nds_contract_parties">
+                            <t t-set="client_label" t-value="'EL CLIENTE'"/>
+                        </t>
+                        <h4 class="nds-c-h">Exponen</h4>
+                        <p>I. Que EL CLIENTE utiliza Odoo como sistema de gestión y desea alojarlo en un servidor
+                            gestionado por NEXTA, con copias de seguridad.</p>
+                        <p>II. Que las Partes han firmado, o firman junto con este contrato, un Acuerdo de Confidencialidad
+                            y su Anexo I de encargo del tratamiento (el «Acuerdo de Confidencialidad»), que se aplica a este
+                            contrato.</p>
+                        <p>III. Que EL CLIENTE ha aceptado el presupuesto <b t-out="doc.name"/> y desea contratar el
+                            servicio conforme a las siguientes</p>
+
+                        <h4 class="nds-c-h">Condiciones particulares</h4>
+                        <table class="nds-c-table">
+                            <thead><tr><th>Servicio</th><th class="text-end">Cantidad</th><th class="text-end">Precio</th><th>Periodicidad</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="lines" t-as="line">
+                                    <td t-out="doc._nds_line_title(line)"/>
+                                    <td class="text-end"><span t-field="line.product_uom_qty" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td class="text-end"><span t-field="line.price_unit" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/> + IVA</td>
+                                    <td t-out="doc._nds_line_period(line)"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="nds-c-kv">
+                            <tr><td>Infraestructura</td><td>Hetzner Online GmbH, centros de datos en la Unión Europea</td></tr>
+                            <tr><td>Instancias, dimensionamiento y correo saliente</td><td>Los indicados en el presupuesto <t t-out="doc.name"/></td></tr>
+                            <tr><td>Copias de seguridad</td><td>Dos copias diarias de la instancia de producción, con 15 días de retención, en una ubicación distinta del servidor</td></tr>
+                            <tr><td>Pago</td><td>Domiciliación SEPA, entre los días 1 y 5 de cada mes</td></tr>
+                            <tr><td>Duración</td><td>Indefinida, sin permanencia, con preaviso de 30 días</td></tr>
+                        </table>
+
+                        <h4 class="nds-c-h">Cláusulas</h4>
+                        <h5>1. Objeto</h5>
+                        <p>NEXTA prestará a EL CLIENTE el servicio de alojamiento gestionado de su Odoo, con las instancias
+                            contratadas, copias de seguridad, mantenimiento de la plataforma y envío del correo saliente, y,
+                            si así figura en el presupuesto, el traslado inicial desde su servidor actual, en los términos de
+                            este contrato.</p>
+
+                        <h5>2. Servicio de alojamiento</h5>
+                        <p>2.1. <b>Infraestructura.</b> NEXTA contrata a su nombre la infraestructura con Hetzner Online
+                            GmbH, en centros de datos de la Unión Europea, y la administra. NEXTA podrá cambiar de proveedor
+                            o de ubicación, siempre dentro de la Unión Europea, siguiendo el procedimiento de subencargados
+                            del Anexo I del Acuerdo de Confidencialidad.</p>
+                        <p>2.2. <b>Instancia de producción.</b> Es la que usa EL CLIENTE en su actividad diaria, accesible
+                            mediante conexión cifrada (HTTPS) en el dominio que se acuerde, con certificado incluido. La
+                            configuración de los registros DNS del dominio de EL CLIENTE corresponde a este, con las
+                            indicaciones de NEXTA.</p>
+                        <p>2.3. <b>Instancia de pruebas.</b> Si está contratada, sirve para probar cambios, actualizaciones
+                            y desarrollos antes de llevarlos a producción. Contendrá una copia de la base de datos de
+                            producción, que NEXTA actualizará a petición de EL CLIENTE, con las mismas medidas de seguridad
+                            que producción y con el correo saliente y las tareas automáticas desactivados.</p>
+                        <p>2.4. <b>Mantenimiento de la plataforma.</b> NEXTA aplicará los parches de seguridad del sistema
+                            operativo y las correcciones de Odoo publicadas para la versión instalada, probándolas antes en
+                            la instancia de pruebas cuando exista; vigilará la disponibilidad y el espacio del servidor; y
+                            renovará los certificados.</p>
+                        <p>2.5. <b>Ventanas de mantenimiento.</b> Las intervenciones que interrumpan el servicio se
+                            programarán, siempre que sea posible, fuera del horario laboral de EL CLIENTE y se avisarán con
+                            al menos cuarenta y ocho (48) horas de antelación, salvo las urgentes de seguridad, que se
+                            avisarán en cuanto sea posible.</p>
+                        <p>2.6. <b>Disponibilidad.</b> NEXTA hará lo razonablemente posible por mantener la instancia de
+                            producción disponible al menos el 99 % del tiempo de cada mes, sin contar las ventanas de
+                            mantenimiento ni las incidencias del proveedor de infraestructura o de las redes de
+                            comunicaciones ajenas a NEXTA. Es un objetivo de servicio, no una garantía con penalización.</p>
+                        <p>2.7. <b>Correo saliente.</b> El correo que envía Odoo (facturas, presupuestos, notificaciones)
+                            se remitirá a través de Amazon SES. La configuración del dominio de envío (registros SPF, DKIM
+                            y DMARC) corresponde a EL CLIENTE con las indicaciones de NEXTA. El correo entrante y los
+                            buzones de EL CLIENTE no forman parte de este servicio.</p>
+
+                        <h5>3. Copias de seguridad</h5>
+                        <p>3.1. NEXTA hará copias completas de la base de datos y de los archivos adjuntos de la instancia
+                            de producción con la frecuencia de las Condiciones Particulares, y comprobará cada día que se
+                            han realizado correctamente.</p>
+                        <p>3.2. Se conservarán las copias de los últimos quince (15) días. Pasado ese plazo, se eliminan
+                            automáticamente y ya no podrán recuperarse. Las copias se guardarán en un almacenamiento distinto
+                            e independiente del servidor de producción, dentro de la Unión Europea y con acceso
+                            restringido.</p>
+                        <p>3.3. Ante una pérdida o corrupción de datos, NEXTA restaurará la copia que indique EL CLIENTE de
+                            entre las disponibles. Restaurar una copia supone perder los datos registrados después de su
+                            fecha, lo que EL CLIENTE acepta como consecuencia inherente al sistema de copias. Las
+                            restauraciones debidas a fallos de la plataforma no tienen coste. Las solicitadas por errores o
+                            borrados de EL CLIENTE se facturarán con cargo a su bolsa de horas o, en su defecto, a 60 € + IVA
+                            por hora.</p>
+
+                        <h5>4. Traslado inicial</h5>
+                        <p>Si el presupuesto incluye el traslado desde otro servidor o proveedor, EL CLIENTE facilitará, u
+                            obtendrá de su proveedor actual, una copia completa de la base de datos y de los archivos
+                            adjuntos, el código fuente de los módulos instalados que no sean estándar de Odoo, las
+                            credenciales de administración y la información sobre integraciones y tareas programadas, y
+                            garantiza que tiene derecho a usar y trasladar esos módulos. El traslado se hará en fases: carga
+                            en pruebas y verificación; validación por EL CLIENTE; fecha de corte acordada; traslado
+                            definitivo y cambio de los registros DNS; y comprobación conjunta. NEXTA no responde de la
+                            integridad de los datos ni del código recibidos de terceros; si detecta problemas, los
+                            comunicará y su corrección se presupuestará aparte.</p>
+
+                        <h5>5. Servicios excluidos</h5>
+                        <p>No forman parte de este contrato y, en su caso, se contratarán o presupuestarán aparte: el
+                            soporte funcional, la configuración y los desarrollos de Odoo; las actualizaciones a una versión
+                            superior de Odoo; el alojamiento de otras aplicaciones; el correo entrante y los buzones; las
+                            licencias de Odoo Enterprise o de módulos de pago; y la seguridad de los equipos, redes y cuentas
+                            de EL CLIENTE.</p>
+
+                        <h5>6. Seguridad: reparto de responsabilidades</h5>
+                        <p>6.1. Corresponde a NEXTA la seguridad de la plataforma: el servidor, el sistema operativo, el
+                            cortafuegos, el cifrado de las conexiones, los accesos de administración, las copias de
+                            seguridad y las medidas del Apéndice 2 del Anexo I del Acuerdo de Confidencialidad.</p>
+                        <p>6.2. Corresponde a EL CLIENTE la seguridad de su uso del sistema: gestionar sus usuarios y
+                            permisos, usar contraseñas robustas y activar el doble factor de autenticación al menos en los
+                            usuarios administradores; no compartir credenciales y retirar de inmediato el acceso de quienes
+                            dejen la empresa; mantener protegidos sus equipos, redes y cuentas de correo, y formar a su
+                            personal frente a engaños como la suplantación de identidad (phishing); custodiar las claves que
+                            entregue a terceros para integraciones y responder de sus actuaciones; y comunicar a NEXTA de
+                            inmediato cualquier sospecha de acceso indebido.</p>
+
+                        <h5>7. Limitación de responsabilidad</h5>
+                        <p>7.1. NEXTA presta el servicio con la diligencia profesional del sector y aplicando medidas de
+                            seguridad razonables y adecuadas al estado de la técnica, pero ningún sistema es invulnerable.
+                            Su obligación es de medios.</p>
+                        <p>7.2. NEXTA no responde de los daños derivados de: (a) accesos realizados con credenciales
+                            válidas de EL CLIENTE o de sus usuarios, aunque hayan sido sustraídas u obtenidas mediante
+                            engaño; (b) programas maliciosos, incluido el secuestro de datos (ransomware), que lleguen a
+                            través de equipos, cuentas, usuarios o integraciones de EL CLIENTE o de terceros que este haya
+                            autorizado; (c) acciones u omisiones de EL CLIENTE, de su personal o de esos terceros; o
+                            (d) caídas, fallos o ataques que afecten al proveedor de infraestructura o a las redes de
+                            comunicaciones ajenas a NEXTA, sin perjuicio de su obligación de actuar con diligencia para
+                            restablecer el servicio.</p>
+                        <p>7.3. Ante una pérdida, cifrado o corrupción de datos, la obligación de NEXTA consiste en restaurar
+                            la última copia íntegra disponible dentro del plazo de retención. NEXTA no responde de los datos
+                            registrados después de esa copia y en ningún caso negociará ni pagará rescates.</p>
+                        <p>7.4. La responsabilidad total de NEXTA por este contrato se limita a las cantidades pagadas por
+                            EL CLIENTE en los doce (12) meses anteriores al hecho que la origine. Ninguna de las Partes
+                            responde de daños indirectos, lucro cesante, pérdida de negocio ni, salvo lo dispuesto en el
+                            apartado 7.3, de la pérdida de datos. Estas limitaciones no se aplican en caso de dolo o culpa
+                            grave, ni a las obligaciones del Acuerdo de Confidencialidad. Se recomienda a EL CLIENTE valorar
+                            la contratación de un seguro de ciberriesgos.</p>
+
+                        <h5>8. Precio y pago</h5>
+                        <p>8.1. EL CLIENTE abonará la cuota de las Condiciones Particulares desde la puesta en marcha de la
+                            instancia de producción. NEXTA emitirá la factura al inicio de cada periodo y la cobrará por
+                            domiciliación SEPA, para lo cual EL CLIENTE firma la orden de domiciliación que acompaña a esta
+                            documentación o la que ya tenga firmada. El primer periodo se facturará en proporción a los días
+                            que resten desde la puesta en marcha.</p>
+                        <p>8.2. <b>Revisión anual.</b> La cuota se actualizará cada 1 de enero, una vez transcurrido al
+                            menos un año desde la firma, según la variación anual del IPC general publicada por el INE para
+                            el mes de octubre anterior. Si la variación es negativa, el precio no se modificará.</p>
+                        <p>8.3. <b>Revisión por costes de proveedores.</b> Si los proveedores de infraestructura o de envío
+                            de correo aumentan sus precios o cambian sus condiciones con efecto sobre el coste del servicio,
+                            NEXTA podrá trasladar a la cuota el aumento acreditado, comunicándolo por escrito con al menos
+                            treinta (30) días de antelación e indicando su causa. EL CLIENTE podrá terminar el contrato sin
+                            penalización antes de que el nuevo precio entre en vigor.</p>
+                        <p>8.4. <b>Crecimiento.</b> Si el uso supera el dimensionamiento contratado o el rendimiento lo
+                            requiere, NEXTA propondrá por escrito la ampliación de recursos y su precio, que solo se aplicará
+                            si EL CLIENTE la acepta.</p>
+                        <p>8.5. <b>Impago.</b> Los gastos de devolución de un recibo se repercutirán a EL CLIENTE. Las
+                            cantidades no pagadas a su vencimiento devengarán el interés de demora y la indemnización por
+                            costes de cobro de la Ley 3/2004, de 29 de diciembre. Si el impago se prolonga más de treinta
+                            (30) días, NEXTA podrá, previo requerimiento escrito con quince (15) días de antelación,
+                            suspender el acceso al servicio hasta su pago. Durante la suspensión, NEXTA conservará los datos
+                            y las copias, que no se verán afectados.</p>
+
+                        <h5>9. Duración y terminación</h5>
+                        <p>9.1. El contrato entra en vigor en la fecha de su firma y tiene duración indefinida, sin
+                            permanencia. Cualquiera de las Partes podrá terminarlo en cualquier momento comunicándolo por
+                            escrito a la otra con treinta (30) días naturales de antelación; durante el preaviso, NEXTA
+                            mantendrá el servicio.</p>
+                        <p>9.2. Cualquiera de las Partes podrá resolverlo si la otra incumple gravemente sus obligaciones y
+                            no lo subsana en los quince (15) días siguientes a su requerimiento escrito.</p>
+                        <p>9.3. <b>Salida.</b> Al terminar el contrato, NEXTA entregará a EL CLIENTE, o al proveedor que
+                            este designe, una copia completa y final de la base de datos y de los archivos adjuntos, y el
+                            código de los módulos instalados con arreglo a sus licencias. La entrega no se condicionará al
+                            pago de cantidades pendientes, que podrán reclamarse por separado. La asistencia técnica
+                            adicional para el traslado a otro proveedor se facturará a 60 € + IVA por hora. Una vez EL
+                            CLIENTE confirme la recepción, o pasados treinta (30) días desde la entrega, NEXTA suprimirá los
+                            datos conforme al Anexo I del Acuerdo de Confidencialidad.</p>
+
+                        <h5>10. Confidencialidad y protección de datos</h5>
+                        <p>La confidencialidad, la no captación de personal y el tratamiento de datos personales se rigen
+                            por el Acuerdo de Confidencialidad y su Anexo I, que forman parte de este contrato. Este contrato
+                            corresponde a los servicios C y D del Anexo I, y EL CLIENTE autoriza a NEXTA a recurrir, para
+                            este servicio, a Hetzner Online GmbH, para la infraestructura y las copias, y a Amazon Web
+                            Services EMEA SARL, para el envío del correo saliente.</p>
+
+                        <h5>11. Disposiciones finales</h5>
+                        <p>11.1. Ninguna de las Partes responde de los retrasos o incumplimientos debidos a causas de
+                            fuerza mayor, sin perjuicio de lo previsto en la cláusula 7. Ninguna podrá ceder este contrato
+                            sin el consentimiento escrito de la otra, salvo NEXTA a una sociedad de su grupo o en caso de
+                            fusión o escisión, comunicándolo por escrito.</p>
+                        <p>11.2. Este contrato, junto con el Acuerdo de Confidencialidad y el presupuesto
+                            <t t-out="doc.name"/>, recoge todo lo pactado sobre su objeto. En caso de discrepancia,
+                            prevalecerá este contrato, salvo en protección de datos, donde prevalecerá el Anexo I. Las
+                            modificaciones deberán hacerse por escrito.</p>
+                        <p>11.3. Las comunicaciones se harán a <t t-out="company.email"/> (NEXTA) y a
+                            <t t-out="doc.partner_id.email or client.email"/> (EL CLIENTE). Los avisos técnicos podrán
+                            enviarse además a las personas de contacto que designe EL CLIENTE. La terminación, la resolución
+                            y las revisiones de precio se comunicarán además por un medio que deje constancia de su
+                            recepción.</p>
+                        <p>11.4. Este contrato puede firmarse de forma manuscrita o electrónica, incluida la firma a través
+                            de la aplicación Firma de Odoo, con idéntica validez. Si alguna cláusula fuera declarada nula, se
+                            tendrá por no puesta y el resto conservará su validez.</p>
+                        <p>11.5. El contrato es mercantil y se rige por la ley española. Antes de acudir a los tribunales,
+                            las Partes intentarán resolver sus controversias mediante negociación directa, iniciada por
+                            comunicación escrita con una propuesta concreta; si en treinta (30) días no hay acuerdo, quedará
+                            abierta la vía judicial. Esta negociación tendrá la consideración de medio adecuado de solución
+                            de controversias a efectos de la Ley Orgánica 1/2025, de 2 de enero. Las Partes se someten, con
+                            renuncia a cualquier otro fuero, a los Juzgados y Tribunales de Castellón de la Plana.</p>
+                    </div>
+
+                    <!-- ===================================================================== -->
+                    <!-- CONTRATO DE SOPORTE, MANTENIMIENTO Y MEJORAS DE ODOO                    -->
+                    <!-- ===================================================================== -->
+                    <div t-if="part == 'support'" class="nds-c-doc">
+                        <t t-set="lines" t-value="doc._nds_contract_lines('support')"/>
+                        <div class="nds-c-docnum">Documento <t t-out="roman"/></div>
+                        <h3 class="nds-c-title">Contrato de soporte, mantenimiento y mejoras de Odoo</h3>
+                        <p>En <t t-out="city"/>, a <t t-out="date_str"/>.</p>
+                        <t t-call="nds_sale_contract_sign.report_nds_contract_parties">
+                            <t t-set="client_label" t-value="'EL CLIENTE'"/>
+                        </t>
+                        <h4 class="nds-c-h">Exponen</h4>
+                        <p>I. Que EL CLIENTE utiliza Odoo como sistema de gestión.</p>
+                        <p>II. Que las Partes han firmado, o firman junto con este contrato, un Acuerdo de Confidencialidad
+                            y su Anexo I de encargo del tratamiento (el «Acuerdo de Confidencialidad»), que se aplica a este
+                            contrato.</p>
+                        <p>III. Que EL CLIENTE ha aceptado el presupuesto <b t-out="doc.name"/> y desea contratar con NEXTA
+                            un servicio continuado de soporte, mantenimiento y mejora de su Odoo conforme a las
+                            siguientes</p>
+
+                        <h4 class="nds-c-h">Condiciones particulares</h4>
+                        <table class="nds-c-table">
+                            <thead><tr><th>Servicio</th><th class="text-end">Cantidad</th><th class="text-end">Precio</th><th>Periodicidad</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="lines" t-as="line">
+                                    <td t-out="doc._nds_line_title(line)"/>
+                                    <td class="text-end"><span t-field="line.product_uom_qty" t-options='{"widget": "float", "precision": 2}'/></td>
+                                    <td class="text-end"><span t-field="line.price_unit" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/> + IVA</td>
+                                    <td t-out="doc._nds_line_period(line)"/>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table class="nds-c-kv">
+                            <tr><td>Horas incluidas</td><td>Las indicadas en el presupuesto <t t-out="doc.name"/></td></tr>
+                            <tr><td>Hora adicional</td><td>60 € + IVA</td></tr>
+                            <tr><td>Pago</td><td>Domiciliación SEPA, entre los días 1 y 5 de cada mes</td></tr>
+                            <tr><td>Duración</td><td>Indefinida, sin permanencia, con preaviso de 30 días</td></tr>
+                        </table>
+
+                        <h4 class="nds-c-h">Cláusulas</h4>
+                        <h5>1. Objeto</h5>
+                        <p>NEXTA prestará a EL CLIENTE un servicio continuado de soporte, mantenimiento y mejora de su
+                            sistema Odoo, con la cuota y las horas indicadas en las Condiciones Particulares y en el
+                            presupuesto, en los términos de este contrato.</p>
+
+                        <h5>2. Servicios incluidos</h5>
+                        <p>Con cargo a la cuota, NEXTA prestará: (a) <b>incidencias y dudas</b>: diagnóstico y resolución de
+                            errores y dudas funcionales de los usuarios; (b) <b>configuración</b>: ajustes de configuración
+                            y parametrización de los módulos instalados (usuarios y permisos, plantillas, informes,
+                            secuencias, reglas, automatizaciones estándar, etc.); (c) <b>mejoras y pequeños desarrollos</b>
+                            de alcance reducido, entendiendo por tales los que el equipo de NEXTA puede ejecutar dentro de
+                            los tiempos incluidos en la cuota y no requieren valoración inicial ni integraciones con
+                            sistemas externos; y (d) <b>formación puntual</b> a los usuarios sobre las funcionalidades
+                            configuradas o desarrolladas.</p>
+
+                        <h5>3. Servicios excluidos</h5>
+                        <p>3.1. Quedan fuera de este contrato y se presupuestarán aparte, previa aceptación expresa de EL
+                            CLIENTE: las integraciones con sistemas de terceros; los proyectos mayores (cualquier desarrollo,
+                            módulo nuevo o cambio que NEXTA estime en más recursos de los contratados, las implantaciones de
+                            nuevas áreas o procesos y las migraciones o importaciones masivas de datos); las actualizaciones
+                            a una versión superior de Odoo y la adaptación de los desarrollos a ella; las adaptaciones a
+                            cambios normativos que requieran módulos nuevos o desarrollo; el alojamiento, las copias de
+                            seguridad y la administración del servidor, que se rigen por su propio contrato; los servicios
+                            de contabilidad, asesoría fiscal, laboral o de nóminas; la corrección de errores causados por
+                            manipulaciones de EL CLIENTE o de terceros no coordinadas con NEXTA; y el soporte de equipos,
+                            redes, correo electrónico y aplicaciones distintas de Odoo.</p>
+                        <p>3.2. Los módulos y desarrollos instalados por otros proveedores se atenderán con la misma
+                            diligencia que el resto del sistema, pero NEXTA no responde de sus defectos de origen.</p>
+                        <p>3.3. Cuando una petición sea un proyecto mayor, NEXTA lo indicará antes de empezar y entregará un
+                            presupuesto. Ninguna tarea excluida se ejecutará ni facturará sin la aceptación escrita de EL
+                            CLIENTE.</p>
+
+                        <h5>4. Bolsa de horas</h5>
+                        <p>4.1. Las horas se computan por el tiempo real dedicado, en fracciones de quince (15) minutos, e
+                            incluyen el diagnóstico, la configuración, el desarrollo, las pruebas, la documentación y la
+                            formación. El tiempo de desplazamiento a las oficinas de EL CLIENTE en la provincia de Castellón
+                            no se computa.</p>
+                        <p>4.2. NEXTA registrará en su sistema cada intervención, con su fecha, descripción y tiempo, que EL
+                            CLIENTE puede consultar en el portal de clientes.</p>
+                        <p>4.3. Agotadas las horas incluidas, las horas adicionales se facturarán a 60 € + IVA por hora, a
+                            mes vencido, y solo se prestarán con la conformidad previa, por escrito, de la persona de
+                            referencia de EL CLIENTE, salvo las incidencias críticas, que NEXTA podrá atender hasta un
+                            máximo de dos (2) horas sin conformidad previa, informando de inmediato a EL CLIENTE.</p>
+                        <p>4.4. Las horas no consumidas en un mes no se acumulan a los meses siguientes: caducan al terminar
+                            cada mes y no se reembolsan ni se descuentan de la cuota.</p>
+                        <p>4.5. Si EL CLIENTE desea un ritmo de avance mayor, las Partes podrán acordar por escrito una
+                            dedicación ampliada con la cuota que corresponda.</p>
+
+                        <h5>5. Canales y tiempos de respuesta</h5>
+                        <p>5.1. EL CLIENTE comunicará las peticiones a través del portal de clientes de NEXTA o por correo
+                            electrónico a <t t-out="support_email"/>, con la descripción del problema, los pasos para
+                            reproducirlo y capturas de pantalla cuando sea posible. Las incidencias críticas podrán
+                            comunicarse además por teléfono, al <t t-out="company.phone"/>.</p>
+                        <p>5.2. El horario de atención es de lunes a jueves laborables en Vila-real, de 8:00 a 17:00, y los
+                            viernes, de 8:00 a 15:00. Tiempos máximos de primera respuesta, en horario de atención:</p>
+                        <table class="nds-c-table">
+                            <thead><tr><th>Prioridad</th><th>Situación</th><th>Primera respuesta</th></tr></thead>
+                            <tbody>
+                                <tr><td>Crítica</td><td>Odoo no está operativo, o no se puede facturar ni registrar cobros y pagos</td><td>1 hora</td></tr>
+                                <tr><td>Alta</td><td>Un proceso importante falla, pero hay una alternativa provisional</td><td>1 día laborable</td></tr>
+                                <tr><td>Normal</td><td>Dudas, ajustes, mejoras y peticiones planificables</td><td>2 días laborables</td></tr>
+                            </tbody>
+                        </table>
+                        <p>5.3. Los tiempos son de primera respuesta y diagnóstico, no de resolución, que dependerá de la
+                            naturaleza de cada caso.</p>
+
+                        <h5>6. Forma de trabajo</h5>
+                        <p>6.1. EL CLIENTE designará una persona de referencia, con capacidad para priorizar, validar y
+                            aprobar horas adicionales y presupuestos, y un sustituto.</p>
+                        <p>6.2. Los cambios de configuración y los desarrollos se probarán primero en una instancia de
+                            pruebas, cuando exista, y pasarán a producción después de que EL CLIENTE los valide. Si no hay
+                            instancia de pruebas, NEXTA podrá trabajar en producción solo con la conformidad de EL CLIENTE,
+                            que asume el riesgo correspondiente.</p>
+                        <p>6.3. Mientras el servidor no esté gestionado por NEXTA, EL CLIENTE es responsable de que exista
+                            una copia de seguridad reciente antes de cualquier intervención relevante.</p>
+                        <p>6.4. EL CLIENTE facilitará los accesos, la información y las validaciones necesarios. Los
+                            retrasos derivados de su falta no serán imputables a NEXTA ni suspenderán la cuota. EL CLIENTE
+                            no permitirá que terceros modifiquen el código, la configuración crítica o la estructura de la
+                            base de datos sin coordinarlo previamente con NEXTA.</p>
+                        <p>6.5. NEXTA presta el servicio con su propia organización y medios, y podrá apoyarse en
+                            colaboradores bajo su dirección y responsabilidad, con sujeción al Acuerdo de
+                            Confidencialidad.</p>
+
+                        <h5>7. Precio y pago</h5>
+                        <p>7.1. EL CLIENTE abonará la cuota de las Condiciones Particulares. NEXTA emitirá la factura al
+                            inicio de cada mes y la cobrará por domiciliación SEPA entre los días 1 y 5 de ese mes, para lo
+                            cual EL CLIENTE firma la orden de domiciliación que acompaña a esta documentación o la que ya
+                            tenga firmada. El primer mes se facturará en proporción a los días que resten desde el inicio
+                            del servicio, y las horas adicionales, a mes vencido.</p>
+                        <p>7.2. La cuota y el precio de la hora adicional se actualizarán cada 1 de enero, una vez
+                            transcurrido al menos un año desde la firma, según la variación anual del IPC general publicada
+                            por el INE para el mes de octubre anterior. Si la variación es negativa, el precio no se
+                            modificará.</p>
+                        <p>7.3. Los gastos de devolución de un recibo se repercutirán a EL CLIENTE. Las cantidades no pagadas
+                            a su vencimiento devengarán el interés de demora y la indemnización por costes de cobro de la
+                            Ley 3/2004, de 29 de diciembre. Si el impago se prolonga más de treinta (30) días, NEXTA podrá,
+                            previo requerimiento con quince (15) días de antelación, suspender el servicio hasta su pago,
+                            sin que ello afecte a la vigencia del contrato.</p>
+
+                        <h5>8. Duración y terminación</h5>
+                        <p>8.1. El contrato tiene duración indefinida, sin permanencia. Cualquiera de las Partes podrá
+                            terminarlo en cualquier momento comunicándolo por escrito a la otra con treinta (30) días
+                            naturales de antelación. Durante el preaviso, NEXTA seguirá prestando el servicio y EL CLIENTE
+                            abonará la parte proporcional de la cuota.</p>
+                        <p>8.2. Cualquiera de las Partes podrá resolverlo si la otra incumple gravemente sus obligaciones y
+                            no lo subsana en los quince (15) días siguientes a su requerimiento escrito.</p>
+                        <p>8.3. Al terminar, NEXTA entregará a EL CLIENTE el código fuente de los desarrollos pagados que no
+                            estuvieran ya instalados en su sistema y la documentación de las configuraciones realizadas, y
+                            se aplicará el Anexo I del Acuerdo de Confidencialidad a los datos personales.</p>
+
+                        <h5>9. Propiedad intelectual y versiones</h5>
+                        <p>9.1. La propiedad intelectual de los desarrollos se rige por la cláusula 5 del Acuerdo de
+                            Confidencialidad.</p>
+                        <p>9.2. La actualización a una versión superior de Odoo es un proyecto independiente y se
+                            presupuestará aparte. EL CLIENTE reconoce que cada desarrollo a medida debe revisarse y, en su
+                            caso, adaptarse en cada actualización de versión, con el coste correspondiente, y que NEXTA no
+                            garantiza su compatibilidad con versiones futuras.</p>
+
+                        <h5>10. Garantía y responsabilidad</h5>
+                        <p>10.1. NEXTA prestará el servicio con la diligencia profesional propia del sector. Su obligación
+                            es de medios.</p>
+                        <p>10.2. Los defectos de los desarrollos de NEXTA que EL CLIENTE comunique en los treinta (30) días
+                            siguientes a su paso a producción se corregirán sin consumo de horas, salvo que se deban a un uso
+                            indebido, a cambios de terceros o a nuevos requisitos.</p>
+                        <p>10.3. NEXTA no responde de los errores propios del software Odoo, de los módulos de terceros ni de
+                            los causados por un uso indebido, por datos erróneos introducidos por EL CLIENTE o por
+                            intervenciones no coordinadas con NEXTA, aunque colaborará de buena fe para identificarlos y
+                            proponer soluciones.</p>
+                        <p>10.4. La responsabilidad total de NEXTA por este contrato se limita a las cantidades pagadas por
+                            EL CLIENTE en los seis (6) meses anteriores al hecho que la origine. Ninguna de las Partes
+                            responde de daños indirectos, lucro cesante ni pérdida de negocio. Estas limitaciones no se
+                            aplican en caso de dolo o culpa grave, ni a las obligaciones del Acuerdo de Confidencialidad.
+                            Ninguna de las Partes responde de los retrasos o incumplimientos debidos a fuerza mayor.</p>
+
+                        <h5>11. Confidencialidad y protección de datos</h5>
+                        <p>La confidencialidad, la no captación de personal y el tratamiento de datos personales se rigen
+                            por el Acuerdo de Confidencialidad y su Anexo I, que forman parte de este contrato. Este contrato
+                            corresponde a los servicios A y B del Anexo I.</p>
+
+                        <h5>12. Disposiciones finales</h5>
+                        <p>12.1. Ninguna de las Partes podrá ceder este contrato sin el consentimiento escrito de la otra,
+                            salvo NEXTA a una sociedad de su grupo o en caso de fusión o escisión, comunicándolo por
+                            escrito.</p>
+                        <p>12.2. Este contrato, junto con el Acuerdo de Confidencialidad y el presupuesto
+                            <t t-out="doc.name"/>, recoge todo lo pactado sobre su objeto. En caso de discrepancia,
+                            prevalecerá este contrato, salvo en protección de datos, donde prevalecerá el Anexo I.</p>
+                        <p>12.3. Las comunicaciones se harán a <t t-out="company.email"/> (NEXTA) y a
+                            <t t-out="doc.partner_id.email or client.email"/> (EL CLIENTE). La terminación y la
+                            resolución se comunicarán además por un medio que deje constancia de su recepción.</p>
+                        <p>12.4. Este contrato puede firmarse de forma manuscrita o electrónica, incluida la firma a través
+                            de la aplicación Firma de Odoo, con idéntica validez. Si alguna cláusula fuera declarada nula,
+                            se tendrá por no puesta y el resto conservará su validez.</p>
+                        <p>12.5. El contrato es mercantil y se rige por la ley española. Antes de acudir a los tribunales,
+                            las Partes intentarán resolver sus controversias mediante negociación directa, iniciada por
+                            comunicación escrita con una propuesta concreta; si en treinta (30) días no hay acuerdo, quedará
+                            abierta la vía judicial. Esta negociación tendrá la consideración de medio adecuado de solución
+                            de controversias a efectos de la Ley Orgánica 1/2025, de 2 de enero. Las Partes se someten, con
+                            renuncia a cualquier otro fuero, a los Juzgados y Tribunales de Castellón de la Plana.</p>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>

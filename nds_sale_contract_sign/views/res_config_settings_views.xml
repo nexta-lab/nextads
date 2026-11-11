@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_nds_contract" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.nds.contract</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="sale.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//app[@name='sale_management']" position="inside">
+                <block title="Contratos para firmar" name="nds_contract_setting_container">
+                    <setting string="Firmante de NextaDS"
+                             help="Firma la documentación después del cliente y figura como representante en los contratos.">
+                        <div class="content-group">
+                            <div class="row mt8">
+                                <label for="nds_contract_signer_id" class="col-lg-4 o_light_label"/>
+                                <field name="nds_contract_signer_id"/>
+                            </div>
+                            <div class="row">
+                                <label for="nds_contract_representative" class="col-lg-4 o_light_label"/>
+                                <field name="nds_contract_representative"/>
+                            </div>
+                            <div class="row">
+                                <label for="nds_contract_representative_title" class="col-lg-4 o_light_label"/>
+                                <field name="nds_contract_representative_title"/>
+                            </div>
+                        </div>
+                    </setting>
+                    <setting string="Datos de los contratos">
+                        <div class="content-group">
+                            <div class="row mt8">
+                                <label for="nds_contract_city" class="col-lg-4 o_light_label"/>
+                                <field name="nds_contract_city"/>
+                            </div>
+                            <div class="row">
+                                <label for="nds_contract_support_email" class="col-lg-4 o_light_label"/>
+                                <field name="nds_contract_support_email"/>
+                            </div>
+                        </div>
+                    </setting>
+                </block>
+            </xpath>
+        </field>
+    </record>
+</odoo>

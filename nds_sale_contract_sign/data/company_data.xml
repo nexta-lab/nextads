@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Valores iniciales de los contratos; se cambian en Ventas › Configuración › Ajustes › Contratos -->
+    <record id="base.main_company" model="res.company">
+        <field name="nds_contract_signer_id" ref="base.user_admin"/>
+        <field name="nds_contract_representative">D. Juan Vicente Romero Barril</field>
+        <field name="nds_contract_representative_title">administrador</field>
+        <field name="nds_contract_city">Vila-real</field>
+    </record>
+</odoo>

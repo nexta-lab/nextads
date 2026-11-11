@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_order_form_nds_contract" model="ir.ui.view">
+        <field name="name">sale.order.form.nds.contract</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header" position="inside">
+                <button name="action_nds_send_contract" type="object"
+                        string="Enviar documentación para firmar"
+                        invisible="state != 'sale' or nds_sign_state in ('sent', 'signed')"
+                        confirm="Se generará la documentación que corresponda (acuerdo de confidencialidad, contratos y orden SEPA) y se publicará el enlace para firmar en el historial del pedido, que le llega al cliente por correo. ¿Continuar?"/>
+            </xpath>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_nds_open_sign_request" type="object" class="oe_stat_button"
+                        icon="fa-pencil-square-o" invisible="not nds_sign_request_id">
+                    <div class="o_stat_info">
+                        <span class="o_stat_text">Documentación</span>
+                        <span class="o_stat_value">
+                            <field name="nds_sign_state" readonly="1"/>
+                        </span>
+                    </div>
+                </button>
+            </xpath>
+            <xpath expr="//page[@name='nds_proposal']" position="inside">
+                <group string="Documentación al aceptar">
+                    <field name="nds_contract_auto"/>
+                    <field name="nds_sign_request_id" invisible="not nds_sign_request_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

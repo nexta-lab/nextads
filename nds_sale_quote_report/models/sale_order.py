@@ -161,12 +161,12 @@ class SaleOrder(models.Model):
         if not blocks:
             return ''
         if len(blocks) == 1:
-            return ("Os proponemos un proyecto centrado en %s. En las páginas siguientes detallamos qué "
+            return ("Os proponemos un proyecto centrado en %s. A continuación detallamos qué "
                     "haremos y con qué dedicación, y lo validaremos con vosotros antes de darlo por "
                     "cerrado." % blocks[0])
         listed = ', '.join(blocks[:-1]) + ' y ' + blocks[-1]
-        return ("Os proponemos un proyecto organizado en %d bloques de trabajo: %s. En las páginas "
-                "siguientes detallamos qué haremos en cada uno y con qué dedicación, y los "
+        return ("Os proponemos un proyecto organizado en %d bloques de trabajo: %s. A continuación "
+                "detallamos qué haremos en cada uno y con qué dedicación, y los "
                 "validaremos con vosotros antes de dar por cerrada cada fase." % (len(blocks), listed))
 
     def _nds_proposal_missing(self):

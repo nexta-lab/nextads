@@ -1,0 +1,265 @@
+// Enlace del presupuesto (portal) con el diseño de marca de NextaDS.
+// Todo va dentro de .nds-portal para no tocar el resto del portal ni de la web.
+
+@font-face { font-family: 'NDS Inter'; font-weight: 400; font-display: swap; src: url('/nds_sale_quote_report/static/fonts/Inter-Regular.ttf') format('truetype'); }
+@font-face { font-family: 'NDS Inter'; font-weight: 500; font-display: swap; src: url('/nds_sale_quote_report/static/fonts/Inter-Medium.ttf') format('truetype'); }
+@font-face { font-family: 'NDS Inter'; font-weight: 600; font-display: swap; src: url('/nds_sale_quote_report/static/fonts/Inter-SemiBold.ttf') format('truetype'); }
+@font-face { font-family: 'NDS Inter'; font-weight: 700; font-display: swap; src: url('/nds_sale_quote_report/static/fonts/Inter-Bold.ttf') format('truetype'); }
+@font-face { font-family: 'NDS Serif'; font-weight: 400; font-display: swap; src: url('/nds_sale_quote_report/static/fonts/SourceSerif4-Regular.ttf') format('truetype'); }
+@font-face { font-family: 'NDS Serif'; font-weight: 600; font-display: swap; src: url('/nds_sale_quote_report/static/fonts/SourceSerif4-SemiBold.ttf') format('truetype'); }
+
+$nds-primary: #004F71;
+$nds-primary-dark: #00374F;
+$nds-navy: #0B3047;
+$nds-accent: #AF5894;
+$nds-accent-soft: #F2E6EF;
+$nds-surface: #F4F8FA;
+$nds-border: #DCE6EB;
+$nds-text: #0C2029;
+$nds-body: #3C5866;
+$nds-muted: #5C7480;
+$nds-sans: 'NDS Inter', 'Inter', Arial, sans-serif;
+$nds-serif: 'NDS Serif', Georgia, serif;
+
+@mixin nds-p-label {
+    font-family: $nds-sans;
+    font-weight: 600;
+    font-size: 0.72rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: $nds-muted;
+}
+
+.nds-portal {
+    font-family: $nds-sans;
+    color: $nds-body;
+
+    .nds-p-eyebrow { @include nds-p-label; color: $nds-accent; margin-bottom: 0.6rem; }
+    .nds-p-eyebrow-light { color: #E7B9D8; }
+    .nds-p-meta-label { @include nds-p-label; display: block; margin-bottom: 0.35rem; }
+
+    .nds-p-section { margin: 3.5rem 0 0; }
+    .nds-p-section-head { margin-bottom: 1.25rem; }
+    .nds-p-num {
+        font-weight: 600;
+        font-size: 1rem;
+        letter-spacing: 0.06em;
+        color: $nds-accent;
+        margin-bottom: 0.25rem;
+    }
+    .nds-p-h2 {
+        font-family: $nds-serif;
+        font-weight: 600;
+        font-size: clamp(1.7rem, 3.2vw, 2.3rem);
+        line-height: 1.15;
+        color: $nds-primary;
+        margin: 0 0 1.4rem;
+    }
+    .nds-p-h3 {
+        font-family: $nds-serif;
+        font-weight: 600;
+        font-size: 1.3rem;
+        color: $nds-primary;
+        margin: 2.2rem 0 0.8rem;
+    }
+    p { line-height: 1.65; }
+    strong { color: $nds-primary; font-weight: 600; }
+
+    // ------------------------------------------------------------- portada
+    .nds-p-cover {
+        position: relative;
+        overflow: hidden;
+        border-radius: 14px;
+        background: $nds-navy;
+        color: #FFFFFF;
+        padding: 2.2rem 2.2rem 1.8rem;
+        min-height: 360px;
+        display: flex;
+        flex-direction: column;
+    }
+    .nds-p-cover-shape {
+        position: absolute;
+        top: -60px;
+        right: -40px;
+        width: 260px;
+        height: 520px;
+        border-radius: 130px;
+        background: $nds-accent;
+        opacity: 0.9;
+        transform: rotate(38deg);
+        pointer-events: none;
+    }
+    .nds-p-cover-logo { height: 38px; width: auto; position: relative; align-self: flex-start; }
+    .nds-p-cover-body { position: relative; margin-top: auto; padding-top: 3rem; max-width: 640px; }
+    .nds-p-cover-title {
+        font-family: $nds-serif;
+        font-weight: 600;
+        font-size: clamp(2rem, 4.6vw, 3rem);
+        line-height: 1.1;
+        color: #FFFFFF;
+        margin: 0;
+        span { color: #FFFFFF; }
+    }
+    .nds-p-cover-rule { width: 54px; height: 4px; border-radius: 2px; background: $nds-accent; margin: 1.3rem 0 1rem; }
+    .nds-p-cover-subject { font-size: 1.15rem; line-height: 1.45; color: #D6E4EC; }
+    .nds-p-cover-meta {
+        position: relative;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem 2.6rem;
+        margin-top: 2.2rem;
+        padding-top: 1rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.18);
+        .nds-p-meta-label { color: #9DB6C4; }
+        .nds-p-meta-value { color: #FFFFFF; font-weight: 600; }
+    }
+
+    // ------------------------------------------------------- quiénes somos
+    .nds-p-intro p { font-size: 1.02rem; margin: 0; }
+    .nds-p-stats { margin-top: 1.4rem; }
+    .nds-p-stat {
+        height: 100%;
+        background: $nds-surface;
+        border-top: 3px solid $nds-accent;
+        border-radius: 10px;
+        padding: 1rem 1.1rem;
+        strong {
+            display: block;
+            font-family: $nds-serif;
+            font-size: 1.55rem;
+            line-height: 1.2;
+            color: $nds-primary;
+            margin-bottom: 0.3rem;
+        }
+        span { display: block; font-size: 0.84rem; line-height: 1.4; color: $nds-muted; }
+    }
+    ul.nds-p-arrows {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        li {
+            position: relative;
+            padding: 0.8rem 0 0.8rem 1.8rem;
+            border-top: 1px solid $nds-border;
+            line-height: 1.55;
+            &:last-child { border-bottom: 1px solid $nds-border; }
+            &::before {
+                content: '→';
+                position: absolute;
+                left: 0;
+                top: 0.8rem;
+                color: $nds-accent;
+                font-weight: 700;
+            }
+        }
+    }
+
+    // --------------------------------------------------- vuestra propuesta
+    .nds-p-block { margin-bottom: 1.8rem; p { font-size: 1.04rem; margin: 0 0 0.7rem; } }
+    .nds-p-label {
+        font-weight: 700;
+        font-size: 0.8rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: $nds-primary;
+        margin-bottom: 0.7rem;
+    }
+    .nds-p-bar {
+        display: inline-block;
+        width: 18px;
+        height: 4px;
+        border-radius: 2px;
+        background: $nds-accent;
+        vertical-align: middle;
+        margin: 0 0.6rem 0.15rem 0;
+    }
+    .nds-p-side {
+        position: sticky;
+        top: 1.5rem;
+        background: $nds-surface;
+        border-top: 3px solid $nds-accent;
+        border-radius: 12px;
+        padding: 1.5rem 1.4rem;
+    }
+    .nds-p-amount {
+        font-family: $nds-serif;
+        font-weight: 600;
+        font-size: 2rem;
+        line-height: 1.1;
+        color: $nds-primary;
+        white-space: nowrap;
+    }
+    .nds-p-small { font-size: 0.85rem; color: $nds-muted; margin-top: 0.3rem; }
+    .nds-p-note { font-size: 0.92rem; line-height: 1.5; margin-top: 0.8rem; }
+    .nds-p-value { font-weight: 600; color: $nds-primary; }
+    .nds-p-sep { border-top: 1px solid $nds-border; margin: 1.1rem 0; }
+
+    // ------------------------------------------------------ próximos pasos
+    .nds-p-step {
+        height: 100%;
+        background: $nds-surface;
+        border-radius: 12px;
+        padding: 1.3rem 1.3rem 1rem;
+        strong { display: block; font-family: $nds-serif; font-size: 1.05rem; margin: 0.4rem 0 0.4rem; }
+        p { font-size: 0.92rem; margin: 0; color: $nds-body; }
+    }
+    .nds-p-step-n { font-family: $nds-serif; font-weight: 600; font-size: 1.9rem; line-height: 1; color: $nds-accent; }
+
+    // --------------------------------------------------------------- cierre
+    .nds-p-closing {
+        position: relative;
+        overflow: hidden;
+        margin: 3rem 0 1rem;
+        border-radius: 14px;
+        background: $nds-navy;
+        color: #FFFFFF;
+        padding: 2.2rem;
+        .row { position: relative; }
+    }
+    .nds-p-closing-shape {
+        position: absolute;
+        top: -40px;
+        left: -60px;
+        width: 180px;
+        height: 180px;
+        background: $nds-accent;
+        transform: rotate(45deg);
+        opacity: 0.9;
+    }
+    .nds-p-closing-logo { height: 34px; width: auto; margin-bottom: 1.1rem; position: relative; }
+    .nds-p-closing-title {
+        font-family: $nds-serif;
+        font-weight: 600;
+        font-size: 1.8rem;
+        line-height: 1.2;
+        span { color: #E7B9D8; }
+    }
+    .nds-p-contact-name { font-family: $nds-serif; font-weight: 600; font-size: 1.25rem; margin-bottom: 0.3rem; }
+    .nds-p-contact-line a { color: #FFFFFF; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, 0.35); }
+    .nds-p-contact-line { margin-bottom: 0.2rem; }
+    .nds-p-contact-hint { font-size: 0.88rem; color: #9DB6C4; margin-top: 0.8rem; }
+}
+
+// Contenido estándar del portal (líneas, totales y condiciones) con la tipografía de la marca
+.nds-portal-content {
+    #introduction h2 { display: none; }
+    table#sales_order_table {
+        thead th { @include nds-p-label; border-bottom: 2px solid $nds-primary; }
+        tr.bg-200, tr.o_line_section td { color: $nds-accent; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.78rem; }
+        td { color: $nds-body; }
+    }
+    #terms {
+        h4 { font-family: $nds-serif; font-weight: 600; color: $nds-primary; }
+        em { font-style: normal; }
+        p strong, p b { display: block; margin-top: 0.9rem; color: $nds-primary; letter-spacing: 0.08em; }
+    }
+}
+
+@media (max-width: 575.98px) {
+    .nds-portal {
+        .nds-p-cover { padding: 1.5rem 1.3rem 1.3rem; min-height: 300px; }
+        .nds-p-cover-shape { width: 170px; height: 360px; right: -70px; }
+        .nds-p-closing { padding: 1.6rem 1.3rem; }
+        .nds-p-side { position: static; }
+    }
+}

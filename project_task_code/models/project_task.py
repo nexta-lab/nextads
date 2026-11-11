@@ -20,14 +20,6 @@ class ProjectTask(models.Model):
         copy=False,
     )
 
-    _sql_constraints = [
-        (
-            "project_task_unique_code",
-            "UNIQUE (company_id, code)",
-            "The code must be unique!",
-        ),
-    ]
-
     @property
     def SELF_WRITABLE_FIELDS(self):
         return super().SELF_WRITABLE_FIELDS | PROJECT_TASK_WRITABLE_FIELDS

@@ -71,6 +71,12 @@ class SaleOrder(models.Model):
             self[name] for name in ('nds_punto_partida', 'nds_que_haremos', 'nds_incluye')
         )
 
+    def _nds_portal_branded(self):
+        """El enlace del presupuesto se muestra con el diseño de marca si lleva la portada de NextaDS."""
+        self.ensure_one()
+        header = self.env.ref('nds_sale_quote_report.quotation_document_nds_header', raise_if_not_found=False)
+        return bool(header) and header in self.sudo().quotation_document_ids
+
     @api.model
     def _nds_default_quote_documents(self):
         """Encabezado y pie de marca de NextaDS, si siguen existiendo y están activos."""

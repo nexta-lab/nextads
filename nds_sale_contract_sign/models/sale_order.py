@@ -139,9 +139,10 @@ class SaleOrder(models.Model):
     def _nds_sign_refs(self):
         ref = lambda xmlid: self.env.ref(xmlid, raise_if_not_found=False)  # noqa: E731
         Role = self.env['sign.item.role'].sudo()
+        # En Firma 18 el rol de la empresa que envía es «User» (sign_item_role_user)
         roles = {
-            'customer': ref('sign.sign_item_role_customer') or Role.search([('name', 'ilike', 'customer')], limit=1),
-            'company': ref('sign.sign_item_role_company') or Role.search([('name', 'ilike', 'company')], limit=1),
+            'customer': ref('sign.sign_item_role_customer') or Role.search([('name', '=', 'Customer')], limit=1),
+            'company': ref('sign.sign_item_role_user') or Role.search([('name', '=', 'User')], limit=1),
         }
         types = {
             'signature': ref('sign.sign_item_type_signature'),
@@ -237,11 +238,15 @@ class SaleOrder(models.Model):
     def _nds_customer_sign_url(self):
         """Enlace para que firme el cliente (el mismo que enviaría la app Firma por correo)."""
         self.ensure_one()
-        item = self._nds_customer_sign_item()
+        item = self._nds_customer_sign_item().sudo()
         if not item:
             return False
-        base = self.get_base_url()
-        return '%s/sign/document/mail/%s/%s' % (base, item.sign_request_id.id, item.access_token)
+        url = item.access_url if 'access_url' in item._fields else False
+        if not url:
+            url = '/sign/document/mail/%s/%s' % (item.sign_request_id.id, item.access_token)
+        if url.startswith('/'):
+            url = self.get_base_url() + url
+        return url
 
     def _nds_customer_has_to_sign(self):
         self.ensure_one()

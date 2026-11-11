@@ -201,9 +201,11 @@
         </xpath>
     </template>
 
-    <!-- Líneas del presupuesto en el portal: título destacado sin «(horas)» y detalle debajo -->
+    <!-- Líneas del presupuesto en el portal: título destacado sin «(horas)» y detalle debajo.
+         Prioridad 120: se aplica después de la vista manual «NextaDS: ocultar nombre de producto en
+         presupuesto online» (prioridad 99), que busca el span de line.name dentro de esta celda. -->
     <template id="sale_order_portal_content_nds_lines" inherit_id="sale.sale_order_portal_content"
-              name="NextaDS: líneas del presupuesto en el portal" priority="50">
+              name="NextaDS: líneas del presupuesto en el portal" priority="120">
         <xpath expr="//td[@id='product_name']" position="replace">
             <td id="product_name" class="nds-p-line">
                 <t t-set="nx_parts" t-value="sale_order._nds_line_parts(line)"/>

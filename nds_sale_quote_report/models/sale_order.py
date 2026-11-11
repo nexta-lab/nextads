@@ -185,6 +185,7 @@ class SaleOrder(models.Model):
         self.ensure_one()
         from markupsafe import Markup
         html = str(self.note or '')
+        html = re.sub(r'<p[^>]*>\s*(?:<br\s*/?>\s*)*</p>', '', html)  # párrafos vacíos: huecos al paginar
         parts = re.split(r'(?=<p[^>]*>\s*<(?:strong|b)>)', html)
         return [Markup(part) for part in parts if part.strip()]
 

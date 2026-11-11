@@ -76,7 +76,8 @@ class SaleOrder(models.Model):
         rows = [row for row in rows if row]
         if not rows:
             return self._nds_clean_title(pname), []
-        return self._nds_clean_title(rows[0]), rows[1:]
+        # «(horas)» se quita también del detalle: hay líneas que agrupan varios servicios con su título
+        return self._nds_clean_title(rows[0]), [NDS_INTERNAL_MARKS.sub('', row) for row in rows[1:]]
 
     def _nds_effective_text(self, field_name):
         """Texto de la propuesta: el del presupuesto o, si está vacío, el de su plantilla y sus productos."""

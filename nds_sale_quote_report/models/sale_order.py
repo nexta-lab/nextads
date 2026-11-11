@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
+import re
+
 from odoo import Command, api, fields, models
+
+# Marcas internas de las descripciones que no se enseñan al cliente: «(horas)», «(hora)», «(h)»
+NDS_INTERNAL_MARKS = re.compile(r'\s*\((?:horas?|h)\)', re.IGNORECASE)
 
 # Pedidos que no son presupuestos comerciales hechos a mano: tienda online,
 # renovaciones y ampliaciones de suscripciones. A estos no se les añaden las páginas de marca.
@@ -37,6 +42,13 @@ class SaleOrder(models.Model):
         help="Por ejemplo, horas y precio por hora, o lo que no está incluido.",
     )
     nds_plazo = fields.Char(string="Plazo estimado")
+    nds_proposal_missing = fields.Boolean(
+        string="Falta «Qué vamos a hacer»", compute='_compute_nds_proposal_missing')
+
+    @api.depends('nds_que_haremos', 'sale_order_template_id', 'order_line.product_id')
+    def _compute_nds_proposal_missing(self):
+        for order in self:
+            order.nds_proposal_missing = order._nds_proposal_missing()
 
     @api.depends('date_order')
     def _compute_nds_quote_date(self):
@@ -47,29 +59,85 @@ class SaleOrder(models.Model):
             )
 
     # ------------------------------------------------------------ página «Vuestra propuesta»
+    # ------------------------------------------------------------ textos de presentación
+    @api.model
+    def _nds_clean_title(self, text):
+        """Quita las marcas internas de la descripción, como «(horas)», al presentarla al cliente."""
+        text = NDS_INTERNAL_MARKS.sub('', text or '')
+        return ' '.join(text.split())
+
+    def _nds_line_parts(self, line):
+        """(título, [detalle]) de una línea: título sin repetir el producto y sin marcas internas."""
+        pname = line.product_id.display_name or ''
+        text = (line.name or '').strip()
+        if pname and text.startswith(pname) and text[len(pname):].strip():
+            text = text[len(pname):].strip()
+        rows = [row.strip() for row in text.split('\n')]
+        rows = [row for row in rows if row]
+        if not rows:
+            return self._nds_clean_title(pname), []
+        return self._nds_clean_title(rows[0]), rows[1:]
+
+    def _nds_effective_text(self, field_name):
+        """Texto de la propuesta: el del presupuesto o, si está vacío, el de su plantilla y sus productos."""
+        self.ensure_one()
+        if self[field_name]:
+            return self[field_name]
+        template = self.sale_order_template_id
+        if template and field_name in template._fields and template[field_name]:
+            return template[field_name]
+        if field_name == 'nds_que_haremos':
+            texts = []
+            for product in self.order_line.filtered(lambda l: not l.display_type).product_id.product_tmpl_id:
+                if product.nds_proposal_text and product.nds_proposal_text not in texts:
+                    texts.append(product.nds_proposal_text)
+            return '\n'.join(texts)
+        if field_name == 'nds_incluye':
+            titles = []
+            for line in self.order_line.filtered(lambda l: not l.display_type and l.product_id):
+                title = self._nds_line_parts(line)[0]
+                if title and title not in titles:
+                    titles.append(title)
+            return '\n'.join(titles)
+        return ''
+
     def _nds_paragraphs(self, field_name):
         """Párrafos del texto: cada línea no vacía es un párrafo."""
         self.ensure_one()
-        text = self[field_name] or ''
+        text = self._nds_effective_text(field_name) or ''
         return [' '.join(line.split()) for line in text.splitlines() if line.strip()]
 
     def _nds_items(self):
         """Elementos de «Qué incluye», sin los guiones o viñetas que se hayan escrito a mano."""
         self.ensure_one()
         items = []
-        for line in (self.nds_incluye or '').splitlines():
-            line = ' '.join(line.split()).lstrip('—–-•*·').strip()
+        for line in (self._nds_effective_text('nds_incluye') or '').splitlines():
+            line = self._nds_clean_title(' '.join(line.split()).lstrip('—–-•*·').strip())
             if line:
                 items.append(line)
         return items
 
     def _nds_has_proposal(self):
-        """La página se imprime si el presupuesto lleva el encabezado de marca y algún texto."""
+        """La página «Vuestra propuesta» va siempre que el presupuesto lleve la portada de marca:
+        si no hay textos propios, se completa con los de la plantilla, los productos y las líneas."""
         self.ensure_one()
         has_header = any(doc.document_type == 'header' for doc in self.quotation_document_ids)
-        return has_header and any(
-            self[name] for name in ('nds_punto_partida', 'nds_que_haremos', 'nds_incluye')
-        )
+        return has_header and bool(
+            self._nds_paragraphs('nds_punto_partida') or self._nds_paragraphs('nds_que_haremos')
+            or self._nds_items())
+
+    def _nds_proposal_missing(self):
+        """Avisos para el comercial: textos de la propuesta que se están rellenando solos o faltan."""
+        self.ensure_one()
+        return not self.nds_que_haremos and not self._nds_effective_text('nds_que_haremos')
+
+    def _nds_note_groups(self):
+        """Condiciones en bloques (título de cláusula + su texto) para que no se separen al paginar."""
+        self.ensure_one()
+        from markupsafe import Markup
+        html = str(self.note or '')
+        parts = re.split(r'(?=<p[^>]*>\s*<(?:strong|b)>)', html)
+        return [Markup(part) for part in parts if part.strip()]
 
     def _nds_portal_branded(self):
         """El enlace del presupuesto se muestra con el diseño de marca si lleva la portada de NextaDS."""

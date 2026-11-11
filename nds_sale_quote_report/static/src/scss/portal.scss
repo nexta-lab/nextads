@@ -115,7 +115,15 @@ $nds-serif: 'NDS Serif', Georgia, serif;
     }
 
     // ------------------------------------------------------- quiénes somos
-    .nds-p-intro p { font-size: 1.02rem; margin: 0; }
+    .nds-p-intro p {
+        font-size: 1.02rem;
+        margin: 0;
+        text-align: justify;
+        text-justify: inter-word;
+        hyphens: auto;
+        -webkit-hyphens: auto;
+        hyphenate-limit-chars: 10 5 4;
+    }
     .nds-p-stats { margin-top: 1.4rem; }
     .nds-p-stat {
         height: 100%;
@@ -243,6 +251,9 @@ $nds-serif: 'NDS Serif', Georgia, serif;
 // Contenido estándar del portal (líneas, totales y condiciones) con la tipografía de la marca
 .nds-portal-content {
     #introduction h2 { display: none; }
+    td.nds-p-line { min-width: 14rem; }
+    .nds-p-line-title { font-family: $nds-serif; font-weight: 600; color: $nds-primary; line-height: 1.35; }
+    .nds-p-line-desc { font-size: 0.86rem; line-height: 1.5; color: $nds-body; margin-top: 0.25rem; }
     h4, h5, h6 { font-family: $nds-serif; font-weight: 600; color: $nds-primary; }
     table#sales_order_table {
         thead th { @include nds-p-label; border-bottom: 2px solid $nds-primary; }
@@ -254,6 +265,12 @@ $nds-serif: 'NDS Serif', Georgia, serif;
         em { font-style: normal; }
         p strong, p b { display: block; margin-top: 0.9rem; color: $nds-primary; letter-spacing: 0.08em; }
     }
+}
+
+// En el móvil, lo primero que se ve es la propuesta (portada y presentación), no la barra lateral
+@media (max-width: 991.98px) {
+    .o_portal_sale_sidebar:has(.nds-portal-top) > div:not(#quote_content) { order: 2; }
+    .o_portal_sale_sidebar:has(.nds-portal-top) > #quote_content { order: 1; margin-top: 0 !important; }
 }
 
 @media (max-width: 575.98px) {

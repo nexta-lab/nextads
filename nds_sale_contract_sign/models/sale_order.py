@@ -90,12 +90,8 @@ class SaleOrder(models.Model):
         return ', '.join(x for x in (partner.street, partner.street2, city) if x)
 
     def _nds_line_title(self, line):
-        """Primera línea útil de la descripción, sin repetir el nombre del producto."""
-        pname = line.product_id.display_name or ''
-        text = (line.name or '').strip()
-        if pname and text.startswith(pname) and text[len(pname):].strip():
-            text = text[len(pname):].strip()
-        return text.split('\n')[0].strip() or pname
+        """Título de la línea tal y como se presenta al cliente (sin «(horas)»)."""
+        return self._nds_line_parts(line)[0]
 
     def _nds_line_period(self, line):
         if 'plan_id' in self._fields and self.plan_id and line.product_id.recurring_invoice:

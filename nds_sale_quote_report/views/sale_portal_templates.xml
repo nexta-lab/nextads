@@ -53,7 +53,7 @@
                 <section class="nds-p-section" id="nds_quienes_somos">
                     <div class="nds-p-num">01</div>
                     <h2 class="nds-p-h2">Quiénes somos</h2>
-                    <div class="row g-4 nds-p-intro">
+                    <div class="row g-4 nds-p-intro" lang="es">
                         <div class="col-md-6">
                             <p>Somos <strong>Nexta Digital Solutions</strong>, una consultora tecnológica que nació en
                             2020 y que recientemente ha alcanzado el nivel de <strong>Odoo Silver Partner</strong>.
@@ -82,8 +82,8 @@
                     <h3 class="nds-p-h3">Cómo trabajamos</h3>
                     <ul class="nds-p-arrows">
                         <li><strong>Primero entendemos vuestra empresa.</strong> Después hablamos de software.</li>
-                        <li><strong>Lo más estándar posible.</strong> Cada desarrollo a medida se vuelve a pagar en cada
-                            actualización, así que solo hacemos los imprescindibles.</li>
+                        <li><strong>Lo más estándar posible.</strong> Cada desarrollo a medida se convierte en deuda
+                            técnica a futuro. Por tanto, siempre trabajaremos con los desarrollos imprescindibles.</li>
                         <li><strong>Alcance y coste claros antes de empezar.</strong> Si aparece algo nuevo por el camino,
                             lo vemos con vosotros antes de seguir.</li>
                         <li><strong>Os decimos que no</strong> cuando algo no es viable o no os conviene.</li>
@@ -198,6 +198,22 @@
                     </div>
                 </section>
             </div>
+        </xpath>
+    </template>
+
+    <!-- Líneas del presupuesto en el portal: título destacado sin «(horas)» y detalle debajo -->
+    <template id="sale_order_portal_content_nds_lines" inherit_id="sale.sale_order_portal_content"
+              name="NextaDS: líneas del presupuesto en el portal" priority="50">
+        <xpath expr="//td[@id='product_name']" position="replace">
+            <td id="product_name" class="nds-p-line">
+                <t t-set="nx_parts" t-value="sale_order._nds_line_parts(line)"/>
+                <div class="nds-p-line-title" t-out="nx_parts[0]"/>
+                <div class="nds-p-line-desc" t-if="nx_parts[1]">
+                    <t t-foreach="nx_parts[1]" t-as="nx_l">
+                        <t t-out="nx_l"/><br t-if="not nx_l_last"/>
+                    </t>
+                </div>
+            </td>
         </xpath>
     </template>
 </odoo>

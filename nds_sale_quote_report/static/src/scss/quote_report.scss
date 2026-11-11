@@ -180,6 +180,37 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
         td[name="td_quantity"] span[t-field], td[name="td_quantity"] span { white-space: nowrap; }
         td.o_price_total { font-weight: 600; color: $nds-primary; }
 
+        // Ninguna fila se parte entre dos páginas
+        tbody tr { page-break-inside: avoid; }
+
+        // Título de sección dentro de su primera fila (ver sale_order_report.xml, punto 5)
+        td.nds-has-section,
+        td.nds-has-section ~ td {
+            border-top: 1px solid $nds-accent !important;
+        }
+        td.nds-has-section ~ td { padding-top: 12.2mm !important; }
+        .nds-sec-in {
+            height: 4mm;
+            line-height: 4mm;
+            margin: 1mm 0 3.6mm 0;
+            font-weight: 700;
+            font-size: 7.4pt;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: $nds-accent;
+            white-space: nowrap;
+        }
+        .nds-sec-bar {
+            display: inline-block;
+            width: 5mm;
+            height: 1mm;
+            background-color: $nds-accent;
+            vertical-align: middle;
+            margin: 0 2.5mm 0.4mm 0;
+        }
+        tr.o_line_note td.nds-has-section { padding-top: 3.6mm !important; }
+        .nds-sec-in-note { color: $nds-accent; font-style: normal; }
+
         tr.o_line_section td {
             font-weight: 700 !important;
             font-size: 7.4pt !important;
@@ -204,6 +235,9 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
             strong { font-weight: 600; @include nds-label; margin-right: 4mm; }
         }
     }
+
+    // totales y firma: no se parten entre páginas
+    div[name="so_total_summary"], div[name="signature"] { page-break-inside: avoid; }
 
     // totales
     #total {
@@ -322,6 +356,10 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
         .nds-prop-sep { height: 0; border-top: 1px solid $nds-border; margin: 5mm 0; }
         .nds-prop-foot { font-size: 9pt; line-height: 1.55; color: $nds-muted; }
     }
+
+    // condiciones: cada cláusula (título + texto) en un bloque que no se separa
+    .nds-terms .nds-keep { page-break-inside: avoid; }
+    .nds-terms .nds-keep > .nds-h3 { margin-top: 9mm; }
 
     // condiciones
     .nds-terms {

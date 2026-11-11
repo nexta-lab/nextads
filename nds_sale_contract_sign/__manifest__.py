@@ -28,7 +28,7 @@ También se puede enviar a mano con el botón «Enviar documentación para firma
     'website': "https://www.nextads.es",
     'license': "LGPL-3",
     'category': 'Sales/Sales',
-    'version': '18.0.1.0.1',
+    'version': '18.0.1.0.2',
     'depends': [
         'nds_sale_quote_report',
         'sale_subscription',

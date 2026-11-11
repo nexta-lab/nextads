@@ -218,10 +218,10 @@ $nds-serif: 'NDS Serif', Georgia, serif;
     }
     .nds-p-closing-shape {
         position: absolute;
-        top: -40px;
-        left: -60px;
-        width: 180px;
-        height: 180px;
+        top: -95px;
+        left: -95px;
+        width: 150px;
+        height: 150px;
         background: $nds-accent;
         transform: rotate(45deg);
         opacity: 0.9;
@@ -243,6 +243,7 @@ $nds-serif: 'NDS Serif', Georgia, serif;
 // Contenido estándar del portal (líneas, totales y condiciones) con la tipografía de la marca
 .nds-portal-content {
     #introduction h2 { display: none; }
+    h4, h5, h6 { font-family: $nds-serif; font-weight: 600; color: $nds-primary; }
     table#sales_order_table {
         thead th { @include nds-p-label; border-bottom: 2px solid $nds-primary; }
         tr.bg-200, tr.o_line_section td { color: $nds-accent; letter-spacing: 0.12em; text-transform: uppercase; font-size: 0.78rem; }

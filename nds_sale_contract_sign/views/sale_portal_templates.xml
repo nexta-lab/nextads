@@ -3,7 +3,7 @@
     <!-- Aviso en el enlace del pedido mientras falte firmar la documentación -->
     <template id="sale_order_portal_template_nds_sign" inherit_id="sale.sale_order_portal_template"
               name="NextaDS: documentación pendiente de firma" priority="60">
-        <xpath expr="//div[@id='portal_sale_content']" position="before">
+        <xpath expr="//div[@id='modalaccept']" position="before">
             <t t-set="nds_sign_pending" t-value="sale_order._nds_customer_has_to_sign()"/>
             <div t-if="nds_sign_pending" class="nds-portal nds-p-signbox d-print-none" id="nds_sign_pending">
                 <div class="nds-p-signbox-text">

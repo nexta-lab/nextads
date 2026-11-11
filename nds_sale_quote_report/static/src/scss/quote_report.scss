@@ -368,7 +368,10 @@ $nds-gutter: 7mm;         // 11 + 7 = 18 mm de margen lateral, como el resto del
         > tbody > tr > td { padding: 0 !important; background: transparent !important; vertical-align: top; }
     }
     .nds-terms tr.nds-keep { page-break-inside: avoid; }
-    .nds-terms .nds-keep .nds-h3 { margin-top: 9mm; }
+    // el espacio va fuera de la fila: si la fila salta de página, wkhtmltopdf recorta el margen
+    // de arriba pero mantiene la altura y deja un hueco debajo del primer párrafo
+    .nds-terms { padding-top: 9mm; }
+    .nds-terms .nds-keep .nds-h3 { margin-top: 0 !important; }
 
     // condiciones
     .nds-terms {

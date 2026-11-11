@@ -33,15 +33,15 @@
                 <table class="nds-prop-grid">
                     <tr>
                         <td class="nds-prop-main">
-                            <div class="nds-prop-block" t-if="doc.nds_punto_partida">
+                            <div class="nds-prop-block" t-if="doc._nds_paragraphs('nds_punto_partida')">
                                 <div class="nds-prop-label"><span class="nds-prop-bar"/>Punto de partida</div>
                                 <p t-foreach="doc._nds_paragraphs('nds_punto_partida')" t-as="nds_par" t-out="nds_par"/>
                             </div>
-                            <div class="nds-prop-block" t-if="doc.nds_que_haremos">
+                            <div class="nds-prop-block" t-if="doc._nds_paragraphs('nds_que_haremos')">
                                 <div class="nds-prop-label"><span class="nds-prop-bar"/>Qué vamos a hacer</div>
                                 <p t-foreach="doc._nds_paragraphs('nds_que_haremos')" t-as="nds_par" t-out="nds_par"/>
                             </div>
-                            <div class="nds-prop-block" t-if="doc.nds_incluye">
+                            <div class="nds-prop-block" t-if="doc._nds_items()">
                                 <div class="nds-prop-label"><span class="nds-prop-bar"/>Qué incluye</div>
                                 <table class="nds-prop-list">
                                     <tr t-foreach="doc._nds_items()" t-as="nds_item">

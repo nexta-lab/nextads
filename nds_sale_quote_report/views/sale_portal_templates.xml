@@ -96,15 +96,15 @@
                     <h2 class="nds-p-h2">Vuestra propuesta</h2>
                     <div class="row g-4">
                         <div class="col-lg-7 col-xl-8">
-                            <div class="nds-p-block" t-if="sale_order.nds_punto_partida">
+                            <div class="nds-p-block" t-if="sale_order._nds_paragraphs('nds_punto_partida')">
                                 <div class="nds-p-label"><span class="nds-p-bar"/>Punto de partida</div>
                                 <p t-foreach="sale_order._nds_paragraphs('nds_punto_partida')" t-as="nds_par" t-out="nds_par"/>
                             </div>
-                            <div class="nds-p-block" t-if="sale_order.nds_que_haremos">
+                            <div class="nds-p-block" t-if="sale_order._nds_paragraphs('nds_que_haremos')">
                                 <div class="nds-p-label"><span class="nds-p-bar"/>Qué vamos a hacer</div>
                                 <p t-foreach="sale_order._nds_paragraphs('nds_que_haremos')" t-as="nds_par" t-out="nds_par"/>
                             </div>
-                            <div class="nds-p-block" t-if="sale_order.nds_incluye">
+                            <div class="nds-p-block" t-if="sale_order._nds_items()">
                                 <div class="nds-p-label"><span class="nds-p-bar"/>Qué incluye</div>
                                 <ul class="nds-p-arrows nds-p-arrows-plain">
                                     <li t-foreach="sale_order._nds_items()" t-as="nds_item" t-out="nds_item"/>

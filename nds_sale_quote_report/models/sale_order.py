@@ -128,27 +128,46 @@ class SaleOrder(models.Model):
             self._nds_paragraphs('nds_punto_partida') or self._nds_paragraphs('nds_que_haremos')
             or self._nds_items())
 
+    NDS_KEEP_WORDS = {
+        'crm': 'CRM', 'seo': 'SEO', 'geo': 'GEO', 'sem': 'SEM', 'erp': 'ERP', 'sepa': 'SEPA',
+        'ia': 'IA', 'tpv': 'TPV', 'api': 'API', 'b2b': 'B2B', 'b2c': 'B2C',
+        'odoo': 'Odoo', 'wordpress': 'WordPress', 'google': 'Google', 'whatsapp': 'WhatsApp',
+    }
+
+    @api.model
+    def _nds_block_name(self, text):
+        """Nombre de sección en minúsculas para ir dentro de una frase, respetando siglas y marcas."""
+        words = []
+        for word in self._nds_clean_title(text).split():
+            core = word.strip('.,;:()«»"\'')
+            keep = self.NDS_KEEP_WORDS.get(core.lower())
+            if keep:
+                words.append(word.replace(core, keep))
+            elif word.isupper() or word[:1].isupper():
+                words.append(word.lower())
+            else:
+                words.append(word)
+        return ' '.join(words)
+
     def _nds_default_que_haremos(self):
         """Último recurso para que la propuesta nunca salga sin explicación: los bloques del
-        presupuesto (secciones) o, si no hay, los servicios. El comercial ve un aviso para cambiarlo."""
+        presupuesto (secciones). El comercial ve un aviso para sustituirlo por un texto propio."""
         self.ensure_one()
         blocks = []
         for line in self.order_line.filtered(lambda l: l.display_type == 'line_section'):
-            name = self._nds_clean_title(line.name)
-            name = name[:1].upper() + name[1:].lower() if name.isupper() else name
+            name = self._nds_block_name(line.name)
             if name and name not in blocks:
                 blocks.append(name)
         if not blocks:
             return ''
         if len(blocks) == 1:
-            listed = blocks[0].lower()
-        else:
-            listed = ', '.join(b[:1].lower() + b[1:] for b in blocks[:-1]) + ' y ' + blocks[-1][:1].lower() + blocks[-1][1:]
-        return ("Os proponemos un proyecto organizado en %d bloques de trabajo: %s. En cada bloque "
-                "detallamos qué haremos y con qué dedicación, y lo validaremos con vosotros antes de "
-                "dar por cerrada cada fase." % (len(blocks), listed)) if len(blocks) > 1 else (
-                "Os proponemos un proyecto centrado en %s. Detallamos qué haremos y con qué dedicación, "
-                "y lo validaremos con vosotros antes de darlo por cerrado." % listed)
+            return ("Os proponemos un proyecto centrado en %s. En las páginas siguientes detallamos qué "
+                    "haremos y con qué dedicación, y lo validaremos con vosotros antes de darlo por "
+                    "cerrado." % blocks[0])
+        listed = ', '.join(blocks[:-1]) + ' y ' + blocks[-1]
+        return ("Os proponemos un proyecto organizado en %d bloques de trabajo: %s. En las páginas "
+                "siguientes detallamos qué haremos en cada uno y con qué dedicación, y los "
+                "validaremos con vosotros antes de dar por cerrada cada fase." % (len(blocks), listed))
 
     def _nds_proposal_missing(self):
         """Avisos para el comercial: textos de la propuesta que se están rellenando solos o faltan."""

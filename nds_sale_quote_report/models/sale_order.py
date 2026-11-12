@@ -11,6 +11,10 @@ NDS_MARK_THEN_DETAIL = re.compile(r'\s*\((?:horas?|h)\)\s*(?=-\s*\S)', re.IGNORE
 # renovaciones y ampliaciones de suscripciones. A estos no se les añaden las páginas de marca.
 NDS_SKIP_DEFAULT_DOCS_FIELDS = ('website_id', 'subscription_id', 'origin_order_id')
 
+# Textos de «Vuestra propuesta» que la pestaña Propuesta trae ya escritos (de la plantilla,
+# de los productos o de las líneas) para retocarlos sobre el propio presupuesto.
+NDS_AUTO_TEXT_FIELDS = ('nds_punto_partida', 'nds_que_haremos', 'nds_incluye')
+
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
@@ -26,18 +30,28 @@ class SaleOrder(models.Model):
         string="Asunto de la propuesta",
         help="Aparece en la portada, debajo del nombre del cliente.",
     )
+    # Vienen escritos con el texto de la plantilla, de los productos o de las líneas. Mientras
+    # nadie los toque, se actualizan al cambiar la plantilla o las líneas; en cuanto se retocan,
+    # se respeta lo escrito. Solo en presupuestos (borrador o enviado).
     nds_punto_partida = fields.Text(
         string="Punto de partida",
+        compute='_compute_nds_proposal_texts', store=True, readonly=False, copy=True,
         help="Qué necesita el cliente. Escribid seguido: cada salto de línea empieza un párrafo nuevo.",
     )
     nds_que_haremos = fields.Text(
         string="Qué vamos a hacer",
+        compute='_compute_nds_proposal_texts', store=True, readonly=False, copy=True,
         help="Cómo lo vamos a resolver. Cada salto de línea empieza un párrafo nuevo.",
     )
     nds_incluye = fields.Text(
         string="Qué incluye",
+        compute='_compute_nds_proposal_texts', store=True, readonly=False, copy=True,
         help="Un elemento por línea. No hace falta poner guiones: la lista se dibuja sola.",
     )
+    # Último texto automático de cada campo: si el campo sigue igual, es que nadie lo ha retocado
+    nds_punto_partida_auto = fields.Text(compute='_compute_nds_proposal_texts', store=True, copy=True)
+    nds_que_haremos_auto = fields.Text(compute='_compute_nds_proposal_texts', store=True, copy=True)
+    nds_incluye_auto = fields.Text(compute='_compute_nds_proposal_texts', store=True, copy=True)
     nds_nota_importe = fields.Char(
         string="Nota bajo el importe",
         help="Por ejemplo, horas y precio por hora, o lo que no está incluido.",
@@ -46,7 +60,23 @@ class SaleOrder(models.Model):
     nds_proposal_missing = fields.Boolean(
         string="Falta «Qué vamos a hacer»", compute='_compute_nds_proposal_missing')
 
-    @api.depends('nds_que_haremos', 'sale_order_template_id', 'order_line.product_id')
+    @api.depends('sale_order_template_id', 'order_line.product_id', 'order_line.name',
+                 'order_line.display_type')
+    def _compute_nds_proposal_texts(self):
+        for order in self:
+            editable = order.state in ('draft', 'sent')
+            for name in NDS_AUTO_TEXT_FIELDS:
+                auto_name = name + '_auto'
+                current, previous = order[name], order[auto_name]
+                if not editable:
+                    order[name], order[auto_name] = current, previous
+                    continue
+                auto = order._nds_auto_text(name) or False
+                # Vacío o igual al último automático = nadie lo ha retocado: se actualiza
+                order[name] = auto if (not current or current == previous) else current
+                order[auto_name] = auto
+
+    @api.depends('nds_que_haremos', 'nds_que_haremos_auto', 'sale_order_template_id', 'order_line.product_id')
     def _compute_nds_proposal_missing(self):
         for order in self:
             order.nds_proposal_missing = order._nds_proposal_missing()
@@ -89,6 +119,11 @@ class SaleOrder(models.Model):
         self.ensure_one()
         if self[field_name]:
             return self[field_name]
+        return self._nds_auto_text(field_name)
+
+    def _nds_auto_text(self, field_name):
+        """Texto automático: el de la plantilla, el de los productos o el de las líneas."""
+        self.ensure_one()
         template = self.sale_order_template_id
         if template and field_name in template._fields and template[field_name]:
             return template[field_name]
@@ -178,8 +213,8 @@ class SaleOrder(models.Model):
     def _nds_proposal_missing(self):
         """Avisos para el comercial: textos de la propuesta que se están rellenando solos o faltan."""
         self.ensure_one()
-        if self.nds_que_haremos:
-            return False
+        if self.nds_que_haremos and self.nds_que_haremos != self.nds_que_haremos_auto:
+            return False  # escrito o retocado a mano
         template = self.sale_order_template_id
         if template and template.nds_que_haremos:
             return False

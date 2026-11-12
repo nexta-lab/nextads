@@ -12,12 +12,16 @@
                         Textos de la portada y de la página «Vuestra propuesta» del presupuesto completo.
                         Escribid seguido, sin cortar las líneas a mano: el diseño las ajusta solo.
                         Cada salto de línea empieza un párrafo nuevo y, en «Qué incluye», un elemento nuevo de la lista.
-                        Lo que dejéis vacío se completa con los textos de la plantilla de presupuesto y de cada producto
+                        Los textos vienen ya escritos con los de la plantilla de presupuesto y los de cada producto
                         (ficha del producto › Ventas › «Qué hacemos en este servicio»); «Qué incluye», con los servicios del presupuesto.
+                        Retocadlos aquí: lo que dejéis tal cual se actualiza si cambiáis la plantilla o las líneas; lo que retoquéis se respeta.
                     </div>
+                    <field name="nds_punto_partida_auto" invisible="1" force_save="1"/>
+                    <field name="nds_que_haremos_auto" invisible="1" force_save="1"/>
+                    <field name="nds_incluye_auto" invisible="1" force_save="1"/>
                     <div class="alert alert-warning" role="alert" invisible="not nds_proposal_missing">
                         Falta explicar al cliente qué vamos a hacer: ni el presupuesto, ni su plantilla, ni sus productos tienen ese texto.
-                        Mientras tanto se imprime un texto genérico a partir de las secciones; escribid el vuestro en «Qué vamos a hacer».
+                        Abajo tenéis un texto genérico hecho a partir de las secciones: cambiadlo por el vuestro en «Qué vamos a hacer».
                     </div>
                     <group>
                         <field name="nds_asunto" placeholder="Ej.: Web corporativa y posicionamiento orgánico"/>

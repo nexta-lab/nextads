@@ -5,6 +5,7 @@ from odoo import Command, api, fields, models
 
 # Marcas internas de las descripciones que no se enseñan al cliente: «(horas)», «(hora)», «(h)»
 NDS_INTERNAL_MARKS = re.compile(r'\s*\((?:horas?|h)\)', re.IGNORECASE)
+NDS_MARK_THEN_DETAIL = re.compile(r'\s*\((?:horas?|h)\)\s*(?=-\s*\S)', re.IGNORECASE)
 
 # Pedidos que no son presupuestos comerciales hechos a mano: tienda online,
 # renovaciones y ampliaciones de suscripciones. A estos no se les añaden las páginas de marca.
@@ -72,7 +73,11 @@ class SaleOrder(models.Model):
         text = (line.name or '').strip()
         if pname and text.startswith(pname) and text[len(pname):].strip():
             text = text[len(pname):].strip()
-        rows = [row.strip() for row in text.split('\n')]
+        rows = []
+        for row in text.split('\n'):
+            # «Título (horas)- detalle» en una sola línea: el detalle pasa a su propia fila
+            parts = NDS_MARK_THEN_DETAIL.split(row, maxsplit=1)
+            rows.extend(part.strip() for part in parts)
         rows = [row for row in rows if row]
         if not rows:
             return self._nds_clean_title(pname), []
